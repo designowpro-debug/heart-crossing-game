@@ -1,0 +1,11 @@
+# 💗 愛心過馬路 Heart Crossing Game
+
+幫小愛心穿過車子很多的馬路，過完馬路就可以蓋房子，蓋出自己的愛心小鎮！
+用方向鍵或螢幕上的大箭頭按鈕移動（也可以在畫面上滑一下）。被車撞到就要重新開始，但是蓋好的房子會一直留著。
+
+Single-file HTML5 canvas game (`index.html`) built for iPad/Safari touch and desktop keyboards.
+
+## 新功能：進去房子佈置 🛋️
+在小鎮裡點空地蓋房子，點房子就可以進去！每間房子一開始都是空的，可以擺床、沙發、桌子、椅子、電視、燈、盆栽、地毯、衣櫃、冰箱、書架、愛心抱枕。拖曳可以移動，🔄 翻轉，🗑️ 刪除。
+
+Play: https://designowpro-debug.github.io/heart-crossing-game/
