@@ -11,4 +11,7 @@ Single-file HTML5 canvas game (`index.html`) built for iPad/Safari touch and des
 ## 新功能：愛心紅綠燈 🚦
 每一段馬路都有斑馬線和愛心形狀的紅綠燈。愛心紅燈亮的時候，車子會慢慢停在停止線前面排隊，趁這時候從斑馬線過馬路最安全！綠燈車子又會開走。
 
+## 新功能：花園和池塘 🌷🦆
+小鎮裡除了房子，還可以蓋花園（玫瑰花園、向日葵、愛心花圃、蔬果園、蘋果樹）和池塘（小池塘、愛心池塘、噴水池）。每過一次馬路就得到 1 個建造機會 🎟️，蓋什麼都用 1 個。點花園會開花、點池塘鴨子會呱呱叫！用「🔨 拆除」可以拆掉（會退回建造機會）。
+
 Play: https://designowpro-debug.github.io/heart-crossing-game/

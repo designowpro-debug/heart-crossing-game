@@ -53,6 +53,9 @@ canvas{position:absolute;left:0;top:0;display:block;touch-action:none;}
 #buildMsg{width:100%;text-align:center;color:#ff4f8b;font-size:1.1em;}
 .opt{min-width:64px;padding:8px 12px;border-radius:16px;background:#fff0f6;color:#5a2340;font-size:1em;font-weight:800;border:3px solid #ffd0e1;}
 .opt.sel{border-color:#ff4f8b;background:#ffe0ec;}
+.kind{min-width:96px;min-height:56px;padding:8px 14px;border-radius:18px;background:#fff;border:4px solid #ffd0e1;font-size:1.15em;font-weight:900;color:#5a2340;}
+.kind.sel{border-color:#ff4f8b;background:#ffe0ec;transform:scale(1.05);}
+.kind.rm.sel{border-color:#ff3b3b;background:#ffe1e1;color:#d11;}
 .sw{width:44px;height:44px;border-radius:50%;border:4px solid #fff;box-shadow:0 0 0 3px #ffd0e1;}
 .sw.sel{box-shadow:0 0 0 4px #ff4f8b;}
 .grp{display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:center;}
@@ -119,6 +122,7 @@ body.building #pad,body.inroom #pad{display:none;}
       </div>
       <div id="buildBar" class="hidden">
         <div id="buildMsg">點一下空地來蓋房子！</div>
+        <div class="grp" id="kindGrp"></div>
         <div class="grp" id="styleGrp"></div>
         <div class="grp" id="colorGrp"></div>
         <button class="big" id="goBtn">出發過馬路！</button>
@@ -144,16 +148,16 @@ var stage=document.getElementById('stage');
 var $=function(id){return document.getElementById(id);};
 
 // ---------- save ----------
-var save={houses:[],tickets:0,level:1,score:0,muted:false,style:0,color:0,v:2};
+var save={houses:[],tickets:0,level:1,score:0,muted:false,style:0,color:0,kind:'house',gstyle:0,pstyle:0,v:3};
 try{var s=JSON.parse(localStorage.getItem(SAVE_KEY)||'null'); if(s&&typeof s==='object'){for(var k in save){if(k in s)save[k]=s[k];}}}catch(e){}
 // migrate v1 -> v2: every house gets an id and its own interior (items)
 if(!Array.isArray(save.houses))save.houses=[];
 save.houses=save.houses.filter(function(h){return h&&typeof h==='object'&&isFinite(h.c)&&isFinite(h.r);});
-save.houses.forEach(function(h,i){if(!h.id)h.id='h'+Date.now().toString(36)+i;
+save.houses.forEach(function(h,i){if(!h.id)h.id='h'+Date.now().toString(36)+i;if(h.kind!=='garden'&&h.kind!=='pond')h.kind='house';
   if(!Array.isArray(h.items))h.items=[];
   h.items=h.items.filter(function(it){return it&&typeof it.t==='string'&&isFinite(it.x)&&isFinite(it.y);});});
-save.v=2;
-function persist(){try{localStorage.setItem(SAVE_KEY,JSON.stringify(save,function(k,v){return k==='pop'?undefined:v;}));}catch(e){}}
+if(['house','garden','pond'].indexOf(save.kind)<0)save.kind='house';save.v=3;
+function persist(){try{localStorage.setItem(SAVE_KEY,JSON.stringify(save,function(k,v){return (k==='pop'||k==='fxT')?undefined:v;}));}catch(e){}}
 
 // ---------- audio ----------
 var actx=null;
@@ -279,12 +283,12 @@ function win(){
 }
 
 function enterBuild(msg){
-  mode='build';curHouse=null;hideAll();$('buildBar').classList.remove('hidden');document.body.classList.remove('inroom');document.body.classList.add('building');
+  townRemove=false;if(typeof makeOptions==='function')makeOptions();mode='build';curHouse=null;hideAll();$('buildBar').classList.remove('hidden');document.body.classList.remove('inroom');document.body.classList.add('building');
   buildMsg(msg);updateGoBtn();resize();
 }
 function buildMsg(msg){
   var m=msg||'';
-  if(!m){m=save.tickets>0?('點空地＝蓋房子（還可以蓋 '+save.tickets+' 棟 🏠）・點房子＝進去佈置 🛋️'):(save.houses.length?'點房子就可以進去擺家具 🛋️ 想要更多房子就去過馬路！':'沒有房子可以蓋了，再去過馬路賺房子吧！');}
+  if(!m){m=save.tickets>0?('🎟️ 建造機會 '+save.tickets+' 個：點空地蓋'+({house:'房子',garden:'花園',pond:'池塘'}[save.kind])+'・點房子進去佈置 🛋️'):(save.houses.length?'點房子進去擺家具 🛋️・點花園池塘看看會怎樣！過一次馬路＝1 個建造機會 🎟️':'過一次馬路＝1 個建造機會 🎟️，快去過馬路吧！');}
   $('buildMsg').textContent=m;
 }
 function updateGoBtn(){$('goBtn').textContent='出發過馬路！第 '+save.level+' 關';}
@@ -292,7 +296,7 @@ function updateGoBtn(){$('goBtn').textContent='出發過馬路！第 '+save.leve
 function updateHud(){
   $('hLevel').textContent='第 '+save.level+' 關';
   $('hScore').textContent='⭐ '+(save.score+(mode==='play'?0:0));
-  $('hHouses').textContent='🏠 '+save.houses.length+(save.tickets?(' (+'+save.tickets+')'):'');
+  $('hHouses').textContent='🏘️ '+save.houses.length+' 🎟️ '+save.tickets;
   $('muteBtn').textContent=save.muted?'🔇':'🔊';
 }
 
@@ -552,8 +556,12 @@ function drawTown(){
       rr(x+town.cw*0.12,y+town.ch*0.12,town.cw*0.76,town.ch*0.76,8);ctx.stroke();ctx.setLineDash([]);}
   }
   var list=save.houses.slice().sort(function(a,b){return a.r-b.r;});
-  list.forEach(function(h){drawHouse(town.x+(h.c+0.5)*town.cw,town.y+(h.r+0.9)*town.ch,town.cw*0.78,h.style,HOUSE_COLORS[h.color]||'#ff7aa9',h.pop);});
-  list.forEach(function(h){if(h.pop<1)return;var tx=town.x+(h.c+0.5)*town.cw,ty=town.y+(h.r+0.93)*town.ch,fs=Math.max(11,Math.round(town.cw*0.15)),tw=fs*3.4,th=fs*1.45;
+  list.forEach(function(h){var cx=town.x+(h.c+0.5)*town.cw,by=town.y+(h.r+0.9)*town.ch,k=kindOf(h);
+    if(k==='garden')drawGarden(cx,town.y+(h.r+0.95)*town.ch,town.cw*0.86,h.style,h);else if(k==='pond')drawPond(cx,town.y+(h.r+0.95)*town.ch,town.cw*0.9,h.style,h);
+    else{var bo=fxAmt(h);drawHouse(cx,by-bo*town.ch*0.1,town.cw*0.78,h.style,HOUSE_COLORS[h.color]||'#ff7aa9',h.pop);}});
+  drawButterflies(list);
+  if(townRemove)list.forEach(function(h){var bx=town.x+(h.c+0.85)*town.cw,by=town.y+(h.r+0.18)*town.ch,rad=Math.max(12,town.cw*0.13);ctx.fillStyle='rgba(255,59,59,.92)';ctx.beginPath();ctx.arc(bx,by,rad,0,7);ctx.fill();ctx.fillStyle='#fff';ctx.font='900 '+Math.round(rad*1.2)+'px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('✕',bx,by+1);});
+  if(!townRemove)list.forEach(function(h){if(h.pop<1||kindOf(h)!=='house')return;var tx=town.x+(h.c+0.5)*town.cw,ty=town.y+(h.r+0.93)*town.ch,fs=Math.max(11,Math.round(town.cw*0.15)),tw=fs*3.4,th=fs*1.45;
     ctx.fillStyle='rgba(255,79,139,.92)';rr(tx-tw/2,ty-th/2,tw,th,th/2);ctx.fill();
     ctx.fillStyle='#fff';ctx.font='900 '+fs+'px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('進去 ▶',tx,ty+1);});
   // heart walking around
@@ -565,21 +573,139 @@ function tapTown(px,py){
   layoutTown();
   var c=Math.floor((px-town.x)/town.cw),r=Math.floor((py-town.y)/town.ch);
   if(c<0||r<0||c>=TOWN_C||r>=TOWN_R)return;
-  var hit=null;save.houses.forEach(function(h){if(h.c===c&&h.r===r)hit=h;});if(hit){enterHouse(hit);return;}
-  if(save.tickets<=0){sfx.no();buildMsg('沒有房子可以蓋了，再去過馬路賺房子吧！🚗');return;}
-  var h={id:'h'+Date.now().toString(36)+Math.floor(Math.random()*1e4),c:c,r:r,style:save.style,color:save.color,items:[],pop:0};save.houses.push(h);save.tickets--;persist();sfx.place();
+  var hit=null;save.houses.forEach(function(h){if(h.c===c&&h.r===r)hit=h;});
+  if(townRemove){if(hit)removeAt(hit);else{sfx.no();buildMsg('點一下有 ✕ 的東西就可以拆掉；再按一次「🔨 拆除」結束');}return;}
+  if(hit){if(kindOf(hit)==='house')enterHouse(hit);else tapFx(hit);return;}
+  if(save.tickets<=0){sfx.no();buildMsg('沒有建造機會了 🎟️ 再去過馬路賺吧！🚗');return;}
+  var K=save.kind,h={id:'h'+Date.now().toString(36)+Math.floor(Math.random()*1e4),kind:K,c:c,r:r,style:K==='garden'?save.gstyle:K==='pond'?save.pstyle:save.style,color:save.color,items:[],pop:0};
+  save.houses.push(h);save.tickets--;persist();if(K==='garden')sfx.bloom();else if(K==='pond')sfx.splash();else sfx.place();
   for(var i=0;i<14;i++){var a=Math.random()*Math.PI*2;particles.push({x:c+0.5,y:TOWN_R-r-0.4,vx:Math.cos(a)*3,vy:Math.sin(a)*3,life:1,max:0.7,color:pick(['#ffe14d','#fff','#ff9cc2']),type:'star',s:0.12,g:0});}
-  if(save.houses.length>=TOWN_C*TOWN_R)buildMsg('🎉 哇！小鎮蓋滿了！你是超級建築師！');else buildMsg('蓋好了！點一下房子可以進去擺家具 🛋️'+(save.tickets>0?('（還可以蓋 '+save.tickets+' 棟）'):''));
+  if(save.houses.length>=TOWN_C*TOWN_R)buildMsg('🎉 哇！小鎮蓋滿了！你是超級建築師！');else buildMsg((K==='house'?'蓋好了！點一下房子可以進去擺家具 🛋️':('「'+kindName(h)+'」做好了！點一下看看會怎樣 ✨'))+(save.tickets>0?('（還有 '+save.tickets+' 個建造機會）'):''));
   updateHud();
 }
 
 // ---------- build UI ----------
 function makeOptions(){
-  var sg=$('styleGrp'),cg=$('colorGrp');sg.innerHTML='';cg.innerHTML='';
-  STYLES.forEach(function(st,i){var b=document.createElement('button');b.className='opt'+(save.style===i?' sel':'');b.textContent=st.e+' '+st.n;
-    b.addEventListener('click',function(){save.style=i;persist();sfx.click();makeOptions();});sg.appendChild(b);});
+  var kg=$('kindGrp'),sg=$('styleGrp'),cg=$('colorGrp');kg.innerHTML='';sg.innerHTML='';cg.innerHTML='';
+  KINDS.forEach(function(K){var b=document.createElement('button');b.className='kind'+(!townRemove&&save.kind===K.k?' sel':'');b.setAttribute('data-k',K.k);b.textContent=K.e+' '+K.n;
+    b.addEventListener('click',function(){save.kind=K.k;townRemove=false;persist();sfx.click();makeOptions();buildMsg();});kg.appendChild(b);});
+  var rb=document.createElement('button');rb.id='removeBtn';rb.className='kind rm'+(townRemove?' sel':'');rb.textContent=townRemove?'🔨 拆除中…':'🔨 拆除';
+  rb.addEventListener('click',function(){townRemove=!townRemove;sfx.click();makeOptions();buildMsg(townRemove?'點一下要拆掉的東西（會還你建造機會 🎟️）':'');});kg.appendChild(rb);
+  sg.style.display=cg.style.display=townRemove?'none':'';
+  var list=save.kind==='garden'?GARDENS:save.kind==='pond'?PONDS:STYLES,key=save.kind==='garden'?'gstyle':save.kind==='pond'?'pstyle':'style';
+  list.forEach(function(st,i){var b=document.createElement('button');b.className='opt'+(save[key]===i?' sel':'');b.textContent=st.e+' '+st.n;
+    b.addEventListener('click',function(){save[key]=i;persist();sfx.click();makeOptions();});sg.appendChild(b);});
+  if(save.kind!=='house')return;
   HOUSE_COLORS.forEach(function(col,i){var b=document.createElement('button');b.className='sw'+(save.color===i?' sel':'');b.style.background=col;b.setAttribute('aria-label','顏色'+(i+1));
     b.addEventListener('click',function(){save.color=i;persist();sfx.click();makeOptions();});cg.appendChild(b);});
+}
+
+// ---------- gardens & ponds ----------
+var KINDS=[{k:'house',n:'房子',e:'🏠'},{k:'garden',n:'花園',e:'🌷'},{k:'pond',n:'池塘',e:'🦆'}];
+var GARDENS=[{n:'玫瑰花園',e:'🌹'},{n:'向日葵',e:'🌻'},{n:'愛心花圃',e:'💐'},{n:'蔬果園',e:'🥕'},{n:'蘋果樹',e:'🍎'}];
+var PONDS=[{n:'小池塘',e:'🐟'},{n:'愛心池塘',e:'💗'},{n:'噴水池',e:'⛲'}];
+var townRemove=false;
+function kindOf(h){return h.kind||'house';}
+function kindName(h){var k=kindOf(h);return k==='garden'?(GARDENS[h.style]||GARDENS[0]).n:k==='pond'?(PONDS[h.style]||PONDS[0]).n:'房子';}
+sfx.bloom=function(){[784,988,1175,1568].forEach(function(f,i){tone(f,0.25,'triangle',0.07,null,i*0.07);});};
+sfx.quack=function(){tone(520,0.09,'sawtooth',0.07,300);tone(480,0.11,'sawtooth',0.07,260,0.13);};
+sfx.splash=function(){noise(0.25,0.08);tone(300,0.25,'sine',0.08,900);};
+function fxAmt(h){if(!h.fxT)return 0;var e=time-h.fxT;return e<1.4?Math.sin(e*Math.PI/1.4):0;}
+function flowerHead(x,y,r,col,ctr,n){ctx.fillStyle=col;for(var i=0;i<n;i++){var a=i/n*Math.PI*2;ctx.beginPath();ctx.ellipse(x+Math.cos(a)*r*0.6,y+Math.sin(a)*r*0.6,r*0.5,r*0.32,a,0,7);ctx.fill();}
+  ctx.fillStyle=ctr;ctx.beginPath();ctx.arc(x,y,r*0.38,0,7);ctx.fill();}
+function stem(x,g,top,sw,w){ctx.strokeStyle='#3e9b4a';ctx.lineWidth=w;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(x,g);ctx.quadraticCurveTo(x,(g+top)/2,x+sw,top);ctx.stroke();}
+function drawGarden(cx,base,s,v,h){
+  var b=fxAmt(h),grow=1+b*0.35,pop=h.pop===undefined?1:h.pop,k=pop<1?pop:1;
+  ctx.save();ctx.translate(cx,base);ctx.scale(k,k);ctx.translate(-cx,-base);
+  var L=cx-s/2,T=base-s*0.85,sw=function(i){return Math.sin(time*2.2+i*1.3+h.c)*s*0.04*(1+b*2);};
+  if(v!==4&&v!==2){ctx.fillStyle='#a8754a';rr(L+s*0.04,base-s*0.42,s*0.92,s*0.4,s*0.1);ctx.fill();ctx.fillStyle='#8f6039';
+    for(var d=0;d<5;d++){ctx.beginPath();ctx.arc(L+s*(0.15+d*0.18),base-s*0.2+(d%2)*s*0.08,s*0.025,0,7);ctx.fill();}}
+  if(v===0){var cols=['#ff3b5c','#ff7aa9','#ff3b5c','#ffb3cf','#ff5e7e','#ff3b5c'];
+    for(var i=0;i<6;i++){var x=L+s*(0.18+(i%3)*0.32),g=base-s*(0.12+Math.floor(i/3)*0.17),tp=g-s*0.26*grow;stem(x,g,tp,sw(i),s*0.03);
+      ctx.fillStyle='#4fb35c';ctx.beginPath();ctx.ellipse(x+s*0.04,(g+tp)/2,s*0.05,s*0.025,-0.6,0,7);ctx.fill();
+      ctx.fillStyle=cols[i];ctx.beginPath();ctx.arc(x+sw(i),tp,s*0.08*grow,0,7);ctx.fill();
+      ctx.strokeStyle='rgba(120,0,30,.45)';ctx.lineWidth=s*0.015;ctx.beginPath();ctx.arc(x+sw(i),tp,s*0.04*grow,0,5);ctx.stroke();}
+  }else if(v===1){for(var j=0;j<3;j++){var x2=L+s*(0.2+j*0.3),g2=base-s*0.15,tp2=g2-s*(0.5+(j%2)*0.12)*grow;stem(x2,g2,tp2,sw(j),s*0.04);
+      ctx.fillStyle='#4fb35c';ctx.beginPath();ctx.ellipse(x2-s*0.06,g2-s*0.2,s*0.07,s*0.03,0.5,0,7);ctx.fill();
+      flowerHead(x2+sw(j),tp2,s*0.13*grow,'#ffd23f','#8a5a2b',11);}
+  }else if(v===2){heartPath(cx,base-s*0.38,s*0.95);ctx.fillStyle='#a8754a';ctx.fill();ctx.strokeStyle='#ff9cc2';ctx.lineWidth=s*0.04;ctx.stroke();
+    var tc=['#ff4f8b','#ffd23f','#a98bff','#ff8a3d','#ff4f8b','#4fc3f7','#ff7aa9'];
+    [[-0.22,-0.5],[0,-0.38],[0.22,-0.5],[-0.12,-0.28],[0.12,-0.28],[0,-0.6],[0,-0.16]].forEach(function(p,i){var x=cx+p[0]*s,g=base+p[1]*s+s*0.06,tp=g-s*0.16*grow;
+      stem(x,g,tp,sw(i)*0.6,s*0.025);ctx.fillStyle=tc[i];var r=s*0.055*grow,tx=x+sw(i)*0.6;
+      ctx.beginPath();ctx.moveTo(tx-r,tp-r*0.6);ctx.lineTo(tx-r*0.5,tp-r*0.1);ctx.lineTo(tx,tp-r*0.8);ctx.lineTo(tx+r*0.5,tp-r*0.1);ctx.lineTo(tx+r,tp-r*0.6);ctx.quadraticCurveTo(tx+r,tp+r,tx,tp+r);ctx.quadraticCurveTo(tx-r,tp+r,tx-r,tp-r*0.6);ctx.fill();});
+  }else if(v===3){for(var q=0;q<4;q++){var x3=L+s*(0.17+q*0.22),g3=base-s*0.28;ctx.fillStyle='#ff8a3d';
+      ctx.beginPath();ctx.moveTo(x3-s*0.04,g3);ctx.lineTo(x3+s*0.04,g3);ctx.lineTo(x3,g3+s*0.12);ctx.closePath();ctx.fill();
+      ctx.strokeStyle='#3fae4c';ctx.lineWidth=s*0.025;for(var lf=-1;lf<=1;lf++){ctx.beginPath();ctx.moveTo(x3,g3);ctx.lineTo(x3+lf*s*0.05+sw(q)*0.5,g3-s*0.12*grow);ctx.stroke();}}
+    for(var cb=0;cb<3;cb++){var x4=L+s*(0.22+cb*0.28),g4=base-s*0.08;ctx.fillStyle='#7fd36b';ctx.beginPath();ctx.arc(x4,g4-s*0.04,s*0.07*grow,0,7);ctx.fill();
+      ctx.fillStyle='#a6e58f';ctx.beginPath();ctx.arc(x4,g4-s*0.05,s*0.035*grow,0,7);ctx.fill();
+      if(cb===1){ctx.fillStyle='#ff3b3b';ctx.beginPath();ctx.arc(x4+s*0.08,g4-s*0.1,s*0.03,0,7);ctx.fill();}}
+  }else{var sx=sw(0)*1.5;ctx.fillStyle='#9a6a3e';ctx.fillRect(cx-s*0.06,base-s*0.42,s*0.12,s*0.4);
+    ctx.fillStyle='rgba(0,0,0,.12)';ctx.beginPath();ctx.ellipse(cx,base-s*0.02,s*0.35,s*0.06,0,0,7);ctx.fill();
+    ctx.fillStyle='#4fb35c';[[0,-0.68,0.3],[-0.22,-0.55,0.22],[0.22,-0.55,0.22],[0,-0.48,0.24]].forEach(function(c){ctx.beginPath();ctx.arc(cx+c[0]*s+sx,base+c[1]*s,c[2]*s*grow,0,7);ctx.fill();});
+    ctx.fillStyle='#62c96e';ctx.beginPath();ctx.arc(cx-s*0.08+sx,base-s*0.75,s*0.13,0,7);ctx.fill();
+    ctx.fillStyle='#ff3b3b';[[-0.15,-0.6],[0.12,-0.7],[0.2,-0.5],[-0.05,-0.45],[0.02,-0.82]].forEach(function(a){ctx.beginPath();ctx.arc(cx+a[0]*s+sx,base+a[1]*s,s*0.04,0,7);ctx.fill();});
+    if(b>0.2){ctx.fillStyle='#ff3b3b';ctx.beginPath();ctx.arc(cx+s*0.3,base-s*0.5+(1-b)*s*0.45,s*0.04,0,7);ctx.fill();}}
+  if(v!==4&&v!==2){ctx.fillStyle='#fff';for(var f=0;f<6;f++){var fx=L+s*(0.04+f*0.18);ctx.fillRect(fx,base-s*0.14,s*0.06,s*0.14);
+      ctx.beginPath();ctx.moveTo(fx,base-s*0.14);ctx.lineTo(fx+s*0.03,base-s*0.18);ctx.lineTo(fx+s*0.06,base-s*0.14);ctx.fill();}
+    ctx.fillRect(L+s*0.04,base-s*0.1,s*0.92,s*0.03);}
+  ctx.restore();
+}
+function drawDuck(x,y,s,dir){ctx.save();ctx.translate(x,y);ctx.scale(dir,1);
+  ctx.fillStyle='#ffe14d';ctx.beginPath();ctx.ellipse(0,0,s*0.5,s*0.3,0,0,7);ctx.fill();ctx.beginPath();ctx.arc(s*0.32,-s*0.3,s*0.22,0,7);ctx.fill();
+  ctx.fillStyle='#ffc21a';ctx.beginPath();ctx.ellipse(-s*0.08,-s*0.02,s*0.22,s*0.12,-0.3,0,7);ctx.fill();
+  ctx.fillStyle='#ff8a3d';ctx.beginPath();ctx.ellipse(s*0.58,-s*0.26,s*0.13,s*0.06,0,0,7);ctx.fill();
+  ctx.fillStyle='#222';ctx.beginPath();ctx.arc(s*0.38,-s*0.36,s*0.04,0,7);ctx.fill();ctx.restore();}
+function lily(x,y,r,flower){ctx.fillStyle='#4fb35c';ctx.beginPath();ctx.moveTo(x,y);ctx.arc(x,y,r,0.4,Math.PI*2-0.1);ctx.closePath();ctx.fill();
+  if(flower){ctx.fillStyle='#ff9cc2';flowerHead(x,y-r*0.2,r*0.5,'#ff9cc2','#ffe14d',6);}}
+function drawPond(cx,base,s,v,h){
+  var b=fxAmt(h),pop=h.pop===undefined?1:h.pop,k=pop<1?pop:1,cy=base-s*0.32,t=time+h.c*0.7+h.r;
+  ctx.save();ctx.translate(cx,base);ctx.scale(k,k);ctx.translate(-cx,-base);
+  function waterPath(){if(v===1)heartPath(cx,cy-s*0.06,s*0.92);else{ctx.beginPath();ctx.ellipse(cx,cy,s*(v===2?0.4:0.44),s*(v===2?0.26:0.28),0,0,7);}}
+  ctx.fillStyle=v===2?'#c9c3bd':'#e8d9a8';
+  if(v===1){heartPath(cx,cy-s*0.06,s*1.04);ctx.fill();}else{ctx.beginPath();ctx.ellipse(cx,cy,s*(v===2?0.47:0.5),s*(v===2?0.32:0.34),0,0,7);ctx.fill();}
+  if(v===2){ctx.strokeStyle='#a9a29b';ctx.lineWidth=s*0.02;ctx.stroke();}
+  waterPath();var g=ctx.createLinearGradient(0,cy-s*0.3,0,cy+s*0.3);g.addColorStop(0,'#7fd3ff');g.addColorStop(1,'#3fa9f5');ctx.fillStyle=g;ctx.fill();
+  ctx.save();waterPath();ctx.clip();
+  ctx.strokeStyle='rgba(255,255,255,.55)';ctx.lineWidth=s*0.015;
+  for(var i=0;i<2;i++){var ph=((t*0.5+i*0.5)%1),rx=cx+(i?s*0.15:-s*0.15),ry=cy+(i?-s*0.05:s*0.06);ctx.globalAlpha=1-ph;ctx.beginPath();ctx.ellipse(rx,ry,s*0.18*ph,s*0.08*ph,0,0,7);ctx.stroke();}
+  if(b>0){ctx.globalAlpha=b;ctx.lineWidth=s*0.03;ctx.beginPath();ctx.ellipse(cx,cy,s*0.4*(1.1-b*0.6),s*0.2*(1.1-b*0.6),0,0,7);ctx.stroke();}
+  ctx.globalAlpha=1;
+  if(v!==2){for(var f=0;f<2;f++){var a=t*(0.8+f*0.3)+f*3,fx=cx+Math.cos(a)*s*0.24,fy=cy+Math.sin(a)*s*0.1+s*0.04,dir=-Math.sin(a)>0?1:-1;
+      ctx.fillStyle=f?'#ffb02e':'#ff6b3d';ctx.beginPath();ctx.ellipse(fx,fy,s*0.05,s*0.025,0,0,7);ctx.fill();
+      ctx.beginPath();ctx.moveTo(fx-dir*s*0.04,fy);ctx.lineTo(fx-dir*s*0.08,fy-s*0.025);ctx.lineTo(fx-dir*s*0.08,fy+s*0.025);ctx.fill();}}
+  ctx.restore();
+  if(v===0){lily(cx-s*0.28,cy+s*0.08,s*0.07,true);lily(cx+s*0.3,cy-s*0.06,s*0.06,false);
+    var da=t*0.4,dx=cx+Math.cos(da)*s*0.15,dy=cy-s*0.02+Math.sin(da)*s*0.05-b*s*0.25;drawDuck(dx,dy,s*0.2,-Math.sin(da)>0?1:-1);}
+  else if(v===1){lily(cx-s*0.22,cy-s*0.12,s*0.06,true);lily(cx+s*0.2,cy-s*0.14,s*0.06,true);lily(cx,cy+s*0.12,s*0.05,false);
+    for(var dk=0;dk<2;dk++){var aa=t*0.5+dk*Math.PI,ddx=cx+Math.cos(aa)*s*0.13,ddy=cy-s*0.05+Math.sin(aa)*s*0.05-(dk?0:b*s*0.25);drawDuck(ddx,ddy,s*(dk?0.15:0.19),-Math.sin(aa)>0?1:-1);}}
+  else{ctx.fillStyle='#d8d2cc';rr(cx-s*0.05,cy-s*0.28,s*0.1,s*0.3,s*0.03);ctx.fill();ctx.fillStyle='#e8e2dc';ctx.beginPath();ctx.ellipse(cx,cy-s*0.28,s*0.12,s*0.04,0,0,7);ctx.fill();
+    var H=s*(0.32+b*0.25);ctx.fillStyle='rgba(180,230,255,.95)';
+    for(var dr=0;dr<14;dr++){var ph2=((t*1.2+dr/14)%1),side=dr%2?1:-1,spread=s*(0.08+(dr%4)*0.05);
+      var x=cx+side*spread*ph2,y=cy-s*0.3-H*(4*ph2*(1-ph2));ctx.beginPath();ctx.arc(x,y,s*0.022,0,7);ctx.fill();}
+    ctx.fillStyle='rgba(255,255,255,.9)';ctx.beginPath();ctx.arc(cx,cy-s*0.3-H*0.95,s*0.03,0,7);ctx.fill();}
+  ctx.restore();
+}
+function drawButterflies(list){
+  var gs=list.filter(function(h){return kindOf(h)==='garden';});if(!gs.length)return;
+  for(var i=0;i<Math.min(4,gs.length+1);i++){var h=gs[i%gs.length],cx=town.x+(h.c+0.5)*town.cw,cy=town.y+(h.r+0.35)*town.ch,s=town.cw;
+    var x=cx+Math.cos(time*0.9+i*2.1)*s*0.45,y=cy+Math.sin(time*1.7+i)*s*0.22,fl=Math.abs(Math.sin(time*12+i))*0.8+0.2;
+    ctx.save();ctx.translate(x,y);ctx.fillStyle=['#ff9cc2','#a98bff','#ffd23f','#4fc3f7'][i%4];
+    [-1,1].forEach(function(d){ctx.beginPath();ctx.ellipse(d*s*0.05*fl,-s*0.02,s*0.05*fl,s*0.04,0,0,7);ctx.fill();ctx.beginPath();ctx.ellipse(d*s*0.04*fl,s*0.025,s*0.035*fl,s*0.03,0,0,7);ctx.fill();});
+    ctx.fillStyle='#5a2340';ctx.fillRect(-s*0.008,-s*0.04,s*0.016,s*0.08);ctx.restore();}
+}
+function tapFx(h){
+  h.fxT=time;var k=kindOf(h);var cx=h.c+0.5,cy=TOWN_R-h.r-0.5;
+  if(k==='garden'){sfx.bloom();buildMsg(pick(['花開得好漂亮！🌸','蝴蝶飛來了！🦋','香香的～ 🌷']));
+    for(var i=0;i<12;i++){var a=Math.random()*Math.PI*2;particles.push({x:cx,y:cy,vx:Math.cos(a)*2,vy:Math.sin(a)*2+1,life:1,max:1,color:pick(['#ff9cc2','#ffd23f','#ff4f8b','#fff']),type:'heart',s:0.08,g:1});}}
+  else{if(h.style===2){sfx.splash();buildMsg('噴水池噴好高！⛲');}else{sfx.quack();buildMsg(pick(['呱呱！🦆','小魚游來游去 🐟','撲通！💦']));}
+    for(var j=0;j<10;j++){particles.push({x:cx+rnd(-0.2,0.2),y:cy+0.1,vx:rnd(-1,1),vy:rnd(2,4),life:1,max:0.8,color:pick(['#bfe9ff','#7fd3ff','#fff']),type:'dot',s:0.07});}}
+}
+function removeAt(h){
+  var nm=kindName(h),msg=kindOf(h)==='house'?('要拆掉這棟房子嗎？裡面的家具也會不見喔！（會還你 1 個建造機會）'):('要拆掉「'+nm+'」嗎？（會還你 1 個建造機會）');
+  if(!confirm(msg))return;
+  var i=save.houses.indexOf(h);if(i>=0)save.houses.splice(i,1);save.tickets++;persist();tone(400,0.15,'square',0.06,150);
+  for(var p=0;p<12;p++){var a=Math.random()*Math.PI*2;particles.push({x:h.c+0.5,y:TOWN_R-h.r-0.5,vx:Math.cos(a)*2.5,vy:Math.sin(a)*2.5,life:1,max:0.6,color:pick(['#ccc','#fff','#e0c9a6']),type:'dot',s:0.1,g:0});}
+  buildMsg('拆掉了！可以在這裡蓋新的東西（還有 '+save.tickets+' 個建造機會 🎟️）');updateHud();
 }
 
 // ---------- house interiors ----------
