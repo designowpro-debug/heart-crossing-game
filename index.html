@@ -1,15 +1,40 @@
 <!DOCTYPE html>
-<html lang="zh-Hant">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="愛心過馬路">
+<meta name="apple-mobile-web-app-title" content="Heart Crossing">
 <meta name="format-detection" content="telephone=no">
 <meta name="theme-color" content="#ff8fb8">
-<title>愛心過馬路</title>
+<title>Heart Crossing – cute road-crossing &amp; town-building game</title>
+<meta name="description" content="Heart Crossing (愛心過馬路) is a cute, free browser game for kids: hop a little heart across busy roads with heart-shaped traffic lights, then build your own town with houses, gardens, ponds and playgrounds. Works great on iPad, phones and desktop.">
+<meta name="keywords" content="kids game, browser game, html5 game, crossy road, frogger, town builder, ipad game, free game, 愛心過馬路">
+<link rel="canonical" href="https://designowpro-debug.github.io/heart-crossing-game/">
+<link rel="alternate" hreflang="en" href="https://designowpro-debug.github.io/heart-crossing-game/?lang=en">
+<link rel="alternate" hreflang="zh-Hant" href="https://designowpro-debug.github.io/heart-crossing-game/?lang=zh">
+<link rel="alternate" hreflang="x-default" href="https://designowpro-debug.github.io/heart-crossing-game/">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Heart Crossing">
+<meta property="og:title" content="Heart Crossing – cute road-crossing &amp; town-building game">
+<meta property="og:description" content="Heart Crossing (愛心過馬路) is a cute, free browser game for kids: hop a little heart across busy roads with heart-shaped traffic lights, then build your own town with houses, gardens, ponds and playgrounds. Works great on iPad, phones and desktop.">
+<meta property="og:url" content="https://designowpro-debug.github.io/heart-crossing-game/">
+<meta property="og:image" content="https://designowpro-debug.github.io/heart-crossing-game/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Heart Crossing – a pink heart hopping across a road and a cute town with houses, gardens and playgrounds">
+<meta property="og:locale" content="en_US">
+<meta property="og:locale:alternate" content="zh_TW">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Heart Crossing – cute road-crossing &amp; town-building game">
+<meta name="twitter:description" content="Heart Crossing (愛心過馬路) is a cute, free browser game for kids: hop a little heart across busy roads with heart-shaped traffic lights, then build your own town with houses, gardens, ponds and playgrounds. Works great on iPad, phones and desktop.">
+<meta name="twitter:image" content="https://designowpro-debug.github.io/heart-crossing-game/og-image.png">
+<meta name="twitter:image:alt" content="Heart Crossing game preview">
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;position:fixed;inset:0;
@@ -39,7 +64,7 @@ canvas{position:absolute;left:0;top:0;display:block;touch-action:none;}
   background:rgba(255,220,235,.55);}
 .card{background:#fff;border-radius:28px;padding:22px 26px;max-width:min(92%,520px);text-align:center;
   box-shadow:0 10px 0 #ffb3cf,0 16px 30px rgba(200,60,110,.3);animation:pop .35s ease-out;}
-.card h1{margin:.1em 0 .3em;font-size:clamp(30px,6vmin,54px);color:#ff4f8b;text-shadow:0 3px 0 #ffd0e1;}
+.card h1{margin:.1em 0 .3em;font-size:clamp(26px,5.4vmin,50px);white-space:nowrap;color:#ff4f8b;text-shadow:0 3px 0 #ffd0e1;}
 .card h2{margin:.1em 0 .4em;font-size:clamp(26px,5vmin,44px);color:#ff4f8b;}
 .card p{font-size:clamp(16px,2.6vmin,22px);line-height:1.6;margin:.4em 0;}
 .big{display:inline-block;margin:10px 6px 0;padding:14px 28px;border-radius:999px;font-size:clamp(20px,3.4vmin,30px);
@@ -62,6 +87,14 @@ canvas{position:absolute;left:0;top:0;display:block;touch-action:none;}
 #buildBar .big{margin:0;padding:10px 20px;font-size:1.15em;}
 #clearBtn{background:none;color:#c98aa5;font-size:.85em;text-decoration:underline;min-height:44px;padding:8px 12px;}
 body.building #pad,body.inroom #pad{display:none;}
+#hud button.lang{width:auto;min-width:3.4em;padding:0 12px;font-size:1em;}
+.cardFoot{margin-top:14px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+.pill{min-height:44px;padding:8px 18px;border-radius:999px;background:#fff0f6;border:3px solid #ffd0e1;color:#ff4f8b;font-weight:900;
+  font-size:clamp(15px,2.3vmin,19px);text-decoration:none;display:inline-flex;align-items:center;font-family:inherit;}
+.furn span{font-size:12px;line-height:1.05;text-align:center;}
+.furn img{width:42px;height:42px;}
+@media (max-width:640px){#hud .title{display:none;}}
+@media (max-height:700px){.card p{margin:.25em 0;line-height:1.45;}.card{padding:16px 20px;}}
 #hint{position:absolute;left:50%;top:10px;transform:translateX(-50%);z-index:6;background:rgba(255,255,255,.95);color:#ff4f8b;
   font-weight:900;font-size:clamp(15px,2.4vmin,22px);padding:8px 16px;border-radius:999px;box-shadow:0 4px 0 #ffb3cf;
   pointer-events:none;white-space:nowrap;max-width:96%;overflow:hidden;text-overflow:ellipsis;transition:opacity .5s;}
@@ -82,65 +115,142 @@ body.building #pad,body.inroom #pad{display:none;}
 <body>
 <div id="app">
   <div id="hud">
-    <span class="title">💗 愛心過馬路</span>
-    <span class="chip" id="hLevel">第 1 關</span>
+    <span class="title" data-i18n="hudTitle">💗 Heart Crossing</span>
+    <span class="chip" id="hLevel">Level 1</span>
     <span class="chip" id="hScore">⭐ 0</span>
     <span class="chip" id="hHouses">🏠 0</span>
-    <button id="muteBtn" aria-label="聲音">🔊</button>
+    <button id="langBtn" class="lang" data-i18n-aria="lang" aria-label="Language">中文</button>
+    <button id="muteBtn" data-i18n-aria="sound" aria-label="Sound">🔊</button>
   </div>
   <div id="main">
     <div id="stage">
       <canvas id="c"></canvas>
       <div class="overlay" id="titleScreen">
         <div class="card">
-          <h1>💗 愛心過馬路 💗</h1>
-          <p>幫小愛心穿過好多車子的馬路！</p>
-          <p>👆 用<b>大箭頭按鈕</b>，或在畫面上<b>滑一下</b>來移動<br>（點一下畫面 = 往前跳）</p>
-          <p>🚦 看<b>愛心紅綠燈</b>：紅燈時車子會停下來，從<b>斑馬線</b>過最安全！</p>
-          <p>🚗 小心車子！被撞到就要重新開始<br>🏠 過完馬路就可以<b>蓋房子</b>喔！</p>
-          <button class="big" id="startBtn">開始遊戲</button>
-          <button class="big alt" id="townBtn">看我的小鎮</button>
+          <h1 data-i18n="cardTitle">💗 Heart Crossing 💗</h1>
+          <p data-i18n="intro">Help the little heart hop across the busy road!</p>
+          <p data-i18n="how1"></p>
+          <p data-i18n="how2"></p>
+          <p data-i18n="how3"></p>
+          <button class="big" id="startBtn" data-i18n="start">Play</button>
+          <button class="big alt" id="townBtn" data-i18n="town">My Town</button>
+          <div class="cardFoot">
+            <button class="pill" id="langBtn2">🌐 中文</button>
+            <a class="pill" id="starLink" href="https://github.com/designowpro-debug/heart-crossing-game" target="_blank" rel="noopener" data-i18n="star">⭐ Star on GitHub</a>
+          </div>
         </div>
       </div>
-      <div id="hint" class="hidden">🚦 等愛心紅燈亮，車子會停下來，從斑馬線快快過！</div>
+      <div id="hint" class="hidden" data-i18n="hint"></div>
       <div class="overlay hidden" id="crashScreen">
         <div class="card">
-          <h2>💥 被撞到了！</h2>
-          <p>別擔心，你蓋的房子都還在 🏠</p>
-          <button class="big" id="retryBtn">重新開始</button>
+          <h2 data-i18n="crashT">💥 Bonk!</h2>
+          <p data-i18n="crashP"></p>
+          <button class="big" id="retryBtn" data-i18n="retry">Try Again</button>
         </div>
       </div>
       <div id="roomBar" class="hidden">
-        <div id="roomMsg">選一個家具，再點房間放上去！</div>
+        <div id="roomMsg" data-i18n="roomMsg0"></div>
         <div id="furnGrp"></div>
         <div id="roomTools">
-          <button class="opt" id="flipBtn">🔄 翻轉</button>
-          <button class="opt" id="trashBtn">🗑️ 刪除模式</button>
-          <button class="opt" id="emptyBtn">🧹 清空房間</button>
-          <button class="big" id="backBtn">🏘️ 回到小鎮</button>
+          <button class="opt" id="flipBtn" data-i18n="flip">🔄 Flip</button>
+          <button class="opt" id="trashBtn">🗑️ Remove</button>
+          <button class="opt" id="emptyBtn" data-i18n="emptyRoom">🧹 Clear Room</button>
+          <button class="big" id="backBtn" data-i18n="back">🏘️ Back to Town</button>
         </div>
       </div>
       <div id="buildBar" class="hidden">
-        <div id="buildMsg">點一下空地來蓋房子！</div>
+        <div id="buildMsg"></div>
         <div class="grp" id="kindGrp"></div>
         <div class="grp" id="styleGrp"></div>
         <div class="grp" id="colorGrp"></div>
-        <button class="big" id="goBtn">出發過馬路！</button>
-        <button id="clearBtn">清除小鎮</button>
+        <button class="big" id="goBtn">🚗 Cross!</button>
+        <button id="clearBtn" data-i18n="clearTown">Clear town</button>
       </div>
     </div>
     <div id="pad">
-      <button class="up" data-d="up" aria-label="上">▲</button>
-      <button class="left" data-d="left" aria-label="左">◀</button>
+      <button class="up" data-d="up" data-i18n-aria="up" aria-label="Up">▲</button>
+      <button class="left" data-d="left" data-i18n-aria="left" aria-label="Left">◀</button>
       <div class="mid">💗</div>
-      <button class="right" data-d="right" aria-label="右">▶</button>
-      <button class="down" data-d="down" aria-label="下">▼</button>
+      <button class="right" data-d="right" data-i18n-aria="right" aria-label="Right">▶</button>
+      <button class="down" data-d="down" data-i18n-aria="down" aria-label="Down">▼</button>
     </div>
   </div>
 </div>
 <script>
 (function(){
 'use strict';
+// ---------- i18n ----------
+var I18N={
+en:{docTitle:'Heart Crossing – cute road-crossing & town-building game',hudTitle:'💗 Heart Crossing',sound:'Sound',lang:'Language',
+ cardTitle:'💗 Heart Crossing 💗',intro:'Help the little heart hop across the busy road!',
+ how1:'👆 Tap the <b>big arrows</b> or <b>swipe</b> to move<br>(tap the screen = hop forward)',
+ how2:'🚦 Watch the <b>heart traffic lights</b>: on red, cars stop — hop over the <b>zebra crossing</b>!',
+ how3:'🚗 Don\'t get bonked! If a car hits you, try again<br>🏠 Make it across to <b>build your own town</b>!',
+ start:'Play',town:'My Town',star:'⭐ Star on GitHub',
+ hint:'🚦 Wait for the red heart light — cars stop, then hop across the zebra crossing!',
+ crashT:'💥 Bonk! You got hit!',crashP:'Don\'t worry — your town is safe 🏠',retry:'Try Again',
+ roomMsg0:'Pick furniture, then tap the room to place it!',flip:'🔄 Flip',trash:'🗑️ Remove',trashOn:'🗑️ Removing… (tap items)',
+ emptyRoom:'🧹 Clear Room',back:'🏘️ Back to Town',clearTown:'Clear town',up:'Up',left:'Left',right:'Right',down:'Down',
+ level:'Level {n}',go:'🚗 Cross! Level {n}',
+ bmHave:'🎟️ {n} to build — tap an empty spot to build: {k} · tap a house to go inside 🛋️',
+ bmHouses:'Tap a house to decorate 🛋️ · tap gardens, ponds & playgrounds for fun! 1 crossing = 1 build 🎟️',
+ bmNone:'1 crossing = 1 build 🎟️ — go cross the road!',
+ win:'🎉 You made it! +1 build — tap an empty spot to build!',
+ lightGo:'Go!',lightY:'Almost',lightWait:'Wait',goalRow:'FINISH · Build Zone',startRow:'START',townTitle:'♥ My Heart Town ♥',enter:'Enter ▶',
+ rmHint:'Tap anything with ✕ to remove it. Tap “🔨 Remove” again to stop',noBuilds:'No builds left 🎟️ Cross the road to earn more! 🚗',
+ full:'🎉 Wow! Your town is full! Super builder!',builtHouse:'Built! Tap the house to go inside 🛋️',builtOther:'Your {n} is ready! Tap it and see ✨',
+ left:' ({n} builds left)',rmBtn:'🔨 Remove',rmBtnOn:'🔨 Removing…',rmMode:'Tap something to remove it (you get the build back 🎟️)',color:'Color',
+ tapGarden:['So pretty! 🌸','Butterflies are here! 🦋','Smells lovely~ 🌷'],tapFountain:'Whoosh! So high! ⛲',tapPond:['Quack quack! 🦆','Little fish swimming 🐟','Splash! 💦'],
+ tapSlide:'Wheee~ down the slide! 🛝',tapSwing:'Swinging so high! 🎠',tapSeesaw:'Up and down! ⚖️',tapClimb:'Made it to the top! ⭐',
+ tapSand:['','Building a sandcastle… 🏖️','It\'s getting taller!','Sandcastle done! 🏰'],tapSandReset:'Sandcastle flattened — build again!',
+ tapBall:'Shoot… score! 🏀',tapPool:'Splash! Swimming is fun 🏊',
+ cfHouse:'Remove this house? The furniture inside will be gone too! (You get 1 build back)',cfOther:'Remove the {n}? (You get 1 build back)',
+ removed:'Removed! Build something new here ({n} builds left 🎟️)',
+ placeSel:'Tap the room to place the {n}!',welcome:'Welcome home! Drag furniture to move it 💗',emptyMsg:'An empty room~ pick furniture, then tap the room!',
+ taken:'{n} removed!',trashHint:'Tap furniture to remove it, or tap “Remove” again to stop',pickFirst:'Pick furniture below first! 👇',
+ placed:'Placed the {n}! Drag to move, or tap 🔄 Flip',selected:'{n} picked: drag to move, 🔄 flip, or drag to 🗑️',
+ emptyCanvas:'An empty room~ add some furniture!',backTown:'Back in town! Tap a house to go inside again 🏠',flipFirst:'Tap the furniture you want to flip first!',
+ trashOnMsg:'Tap furniture to remove it (or drag it to 🗑️)',trashOffMsg:'Remove mode off',cfRoom:'Remove all furniture from this house?',roomCleared:'Room cleared!',
+ cfTown:'Really clear your whole town?',townCleared:'Town cleared — start building again!'},
+zh:{docTitle:'愛心過馬路',hudTitle:'💗 愛心過馬路',sound:'聲音',lang:'語言',
+ cardTitle:'💗 愛心過馬路 💗',intro:'幫小愛心穿過好多車子的馬路！',
+ how1:'👆 用<b>大箭頭按鈕</b>，或在畫面上<b>滑一下</b>來移動<br>（點一下畫面 = 往前跳）',
+ how2:'🚦 看<b>愛心紅綠燈</b>：紅燈時車子會停下來，從<b>斑馬線</b>過最安全！',
+ how3:'🚗 小心車子！被撞到就要重新開始<br>🏠 過完馬路就可以<b>蓋房子</b>喔！',
+ start:'開始遊戲',town:'看我的小鎮',star:'⭐ 到 GitHub 按星星',
+ hint:'🚦 等愛心紅燈亮，車子會停下來，從斑馬線快快過！',
+ crashT:'💥 被撞到了！',crashP:'別擔心，你蓋的房子都還在 🏠',retry:'重新開始',
+ roomMsg0:'選一個家具，再點房間放上去！',flip:'🔄 翻轉',trash:'🗑️ 刪除模式',trashOn:'🗑️ 刪除中…(點家具)',
+ emptyRoom:'🧹 清空房間',back:'🏘️ 回到小鎮',clearTown:'清除小鎮',up:'上',left:'左',right:'右',down:'下',
+ level:'第 {n} 關',go:'出發過馬路！第 {n} 關',
+ bmHave:'🎟️ 建造機會 {n} 個：點空地蓋{k}・點房子進去佈置 🛋️',
+ bmHouses:'點房子進去擺家具 🛋️・點花園池塘遊戲區看看會怎樣！過一次馬路＝1 個建造機會 🎟️',
+ bmNone:'過一次馬路＝1 個建造機會 🎟️，快去過馬路吧！',
+ win:'🎉 成功過馬路！得到 1 個建造機會，點空地蓋起來吧！',
+ lightGo:'可以過！',lightY:'快變紅燈',lightWait:'等一下',goalRow:'終點・蓋房子區',startRow:'起點',townTitle:'♥ 我的愛心小鎮 ♥',enter:'進去 ▶',
+ rmHint:'點一下有 ✕ 的東西就可以拆掉；再按一次「🔨 拆除」結束',noBuilds:'沒有建造機會了 🎟️ 再去過馬路賺吧！🚗',
+ full:'🎉 哇！小鎮蓋滿了！你是超級建築師！',builtHouse:'蓋好了！點一下房子可以進去擺家具 🛋️',builtOther:'「{n}」做好了！點一下看看會怎樣 ✨',
+ left:'（還有 {n} 個建造機會）',rmBtn:'🔨 拆除',rmBtnOn:'🔨 拆除中…',rmMode:'點一下要拆掉的東西（會還你建造機會 🎟️）',color:'顏色',
+ tapGarden:['花開得好漂亮！🌸','蝴蝶飛來了！🦋','香香的～ 🌷'],tapFountain:'噴水池噴好高！⛲',tapPond:['呱呱！🦆','小魚游來游去 🐟','撲通！💦'],
+ tapSlide:'咻～溜下來了！🛝',tapSwing:'盪得好高喔！🎠',tapSeesaw:'蹺蹺板上上下下！⚖️',tapClimb:'爬到最上面了！⭐',
+ tapSand:['','蓋沙堡中…🏖️','沙堡越來越高！','沙堡完成了！🏰'],tapSandReset:'沙堡推平了，再蓋一次吧！',
+ tapBall:'投籃…進了！🏀',tapPool:'撲通！游泳好好玩 🏊',
+ cfHouse:'要拆掉這棟房子嗎？裡面的家具也會不見喔！（會還你 1 個建造機會）',cfOther:'要拆掉「{n}」嗎？（會還你 1 個建造機會）',
+ removed:'拆掉了！可以在這裡蓋新的東西（還有 {n} 個建造機會 🎟️）',
+ placeSel:'點一下房間，把「{n}」放上去！',welcome:'歡迎回家！可以拖曳家具換位置 💗',emptyMsg:'空空的房間～選一個家具，再點房間放上去！',
+ taken:'「{n}」拿走了！',trashHint:'點一下要拿走的家具，或再按一次「刪除模式」結束',pickFirst:'先在下面選一個家具喔！👇',
+ placed:'放好「{n}」了！可以拖曳移動，或按 🔄 翻轉',selected:'選到「{n}」：拖曳移動、🔄 翻轉，或拖到 🗑️ 丟掉',
+ emptyCanvas:'空空的房間～放一些家具吧！',backTown:'回到小鎮了！點房子可以再進去 🏠',flipFirst:'先點一下要翻轉的家具喔！',
+ trashOnMsg:'點一下要拿走的家具（也可以把家具拖到 🗑️）',trashOffMsg:'結束刪除模式',cfRoom:'要把這間房子的家具全部拿走嗎？',roomCleared:'房間清空了！',
+ cfTown:'真的要把小鎮全部清掉嗎？',townCleared:'小鎮清空了，重新蓋吧！'}
+};
+var LANG=(function(){var q=(location.search.match(/[?&]lang=([a-zA-Z-]+)/)||[])[1];
+  if(q){q=/^zh/i.test(q)?'zh':'en';try{localStorage.setItem('heartLang',q);}catch(e){}return q;}
+  var st=null;try{st=localStorage.getItem('heartLang');}catch(e){}return st==='zh'?'zh':'en';})();
+function T(k,a){var v=(I18N[LANG]||I18N.en)[k];if(v===undefined)v=I18N.en[k];if(v===undefined)return k;if(typeof v!=='string')return v;
+  return a?v.replace(/\{(\w+)\}/g,function(_,x){return a[x]!==undefined?a[x]:'';}):v;}
+function i18nName(o){var p=o.n;Object.defineProperty(o,'n',{get:function(){return LANG==='zh'?p[1]:p[0];},configurable:true});return o;}
+
 var COLS=9, SAVE_KEY='heartTown_v1';
 var TOWN_C=8, TOWN_R=5;
 var canvas=document.getElementById('c'), ctx=canvas.getContext('2d');
@@ -207,7 +317,7 @@ function heartPath(x,y,s,g){g=g||ctx;g.beginPath();g.moveTo(x,y+0.42*s);
 
 var CAR_COLORS=['#ff5e5e','#ffb02e','#ffe14d','#4fc3f7','#7c6cf2','#43d18a','#ff7ad1','#ff8a3d','#36c9c6'];
 var HOUSE_COLORS=['#ff7aa9','#ffb02e','#4fc3f7','#43d18a','#a98bff','#ff5e5e'];
-var STYLES=[{n:'小屋',e:'🏠'},{n:'高樓',e:'🏢'},{n:'城堡',e:'🏰'},{n:'愛心屋',e:'💗'}];
+var STYLES=[{n:['Cottage','小屋'],e:'🏠'},{n:['Tower','高樓'],e:'🏢'},{n:['Castle','城堡'],e:'🏰'},{n:['Heart House','愛心屋'],e:'💗'}].map(i18nName);
 
 // ---------- game state ----------
 var mode='title'; // title | play | crash | win | build
@@ -288,13 +398,13 @@ function enterBuild(msg){
 }
 function buildMsg(msg){
   var m=msg||'';
-  if(!m){m=save.tickets>0?('🎟️ 建造機會 '+save.tickets+' 個：點空地蓋'+({house:'房子',garden:'花園',pond:'池塘',play:'遊戲區'}[save.kind])+'・點房子進去佈置 🛋️'):(save.houses.length?'點房子進去擺家具 🛋️・點花園池塘看看會怎樣！過一次馬路＝1 個建造機會 🎟️':'過一次馬路＝1 個建造機會 🎟️，快去過馬路吧！');}
+  if(!m){var kn=(KINDS.filter(function(x){return x.k===save.kind;})[0]||KINDS[0]).n;m=save.tickets>0?T('bmHave',{n:save.tickets,k:kn}):(save.houses.length?T('bmHouses'):T('bmNone'));}
   $('buildMsg').textContent=m;
 }
-function updateGoBtn(){$('goBtn').textContent='出發過馬路！第 '+save.level+' 關';}
+function updateGoBtn(){$('goBtn').textContent=T('go',{n:save.level});}
 
 function updateHud(){
-  $('hLevel').textContent='第 '+save.level+' 關';
+  $('hLevel').textContent=T('level',{n:save.level});
   $('hScore').textContent='⭐ '+(save.score+(mode==='play'?0:0));
   $('hHouses').textContent='🏘️ '+save.houses.length+' 🎟️ '+save.tickets;
   $('muteBtn').textContent=save.muted?'🔇':'🔊';
@@ -325,7 +435,7 @@ function update(dt){
     }
   }
   if(mode==='crash'){timer+=dt;if(timer>0.9&&$('crashScreen').classList.contains('hidden')){$('crashScreen').classList.remove('hidden');persist();}}
-  if(mode==='win'){timer+=dt;if(timer>1.3)enterBuild('🎉 成功過馬路！得到 1 棟房子，點空地蓋起來吧！');}
+  if(mode==='win'){timer+=dt;if(timer>1.3)enterBuild(T('win'));}
   if(shake>0)shake-=dt;
   particles=particles.filter(function(p){p.life-=dt/p.max;p.x+=p.vx*dt;p.y+=p.vy*dt;p.vy-=(p.g!==undefined?p.g:9)*dt;return p.life>0;});
   floaters=floaters.filter(function(f){f.t+=dt;return f.t<1;});
@@ -374,7 +484,7 @@ function drawLight(l){
   // kid hint bubble on the crosswalk column
   var bx=x0+(cw+0.5)*C,by=gy+C*0.28,go=l.state==='red',fs=Math.round(C*0.22);
   ctx.font='900 '+fs+'px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
-  var txt=go?'可以過！':(l.state==='yellow'?'快變紅燈':'等一下'),tw=ctx.measureText(txt).width+fs;
+  var txt=go?T('lightGo'):(l.state==='yellow'?T('lightY'):T('lightWait')),tw=ctx.measureText(txt).width+fs;
   ctx.globalAlpha=go?0.95:0.8;ctx.fillStyle=go?'#2fbf71':(l.state==='yellow'?'#f0a500':'#ff5c8a');rr(bx-tw/2,by-fs*0.75,tw,fs*1.5,fs*0.75);ctx.fill();
   ctx.fillStyle='#fff';ctx.fillText(txt,bx,by+1);ctx.globalAlpha=1;
 }
@@ -399,14 +509,14 @@ function drawWorld(){
       ctx.fillStyle='#ffd6e7';ctx.fillRect(x0,y,W,C);
       for(var g=0;g<COLS;g++){ctx.fillStyle=g%2?'#ffc2da':'#ffe3ef';ctx.fillRect(x0+g*C,y,C,C);}
       ctx.fillStyle='#ff4f8b';ctx.font='900 '+Math.round(C*0.42)+'px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
-      ctx.fillText('終點・蓋房子區',x0+W/2,y+C/2);
+      ctx.fillText(T('goalRow'),x0+W/2,y+C/2);
       drawHouse(x0+C*0.5,y+C*0.92,C*0.7,0,'#ff7aa9',1);drawHouse(x0+W-C*0.5,y+C*0.92,C*0.7,0,'#4fc3f7',1);
     }else{
       for(var gx=0;gx<COLS;gx++){ctx.fillStyle=(gx+r)%2?'#8fd46a':'#9fdd78';ctx.fillRect(x0+gx*C,y,C,C);}
       var sd=row.seed||0.3;
       for(var f=0;f<4;f++){var fx=x0+((sd*9973*(f+1))%1)*W,fy=y+(0.2+((sd*7919*(f+3))%1)*0.6)*C;
         ctx.fillStyle=['#fff','#ffe14d','#ff9cc2','#fff'][f];ctx.beginPath();ctx.arc(fx,fy,C*0.06,0,7);ctx.fill();}
-      if(row.start){ctx.fillStyle='rgba(255,255,255,.85)';ctx.font='900 '+Math.round(C*0.32)+'px sans-serif';ctx.textAlign='left';ctx.textBaseline='middle';ctx.fillText('起點',x0+C*0.15,y+C/2);}
+      if(row.start){ctx.fillStyle='rgba(255,255,255,.85)';ctx.font='900 '+Math.round(C*0.32)+'px sans-serif';ctx.textAlign='left';ctx.textBaseline='middle';ctx.fillText(T('startRow'),x0+C*0.15,y+C/2);}
     }
     if(row.coin!==undefined&&row.coin!==false){var cx=x0+(row.coin+0.5)*C,cy=y+C/2+Math.sin(time*4)*C*0.06;
       ctx.fillStyle='#ffd23f';ctx.beginPath();ctx.arc(cx,cy,C*0.22,0,7);ctx.fill();ctx.strokeStyle='#e8a800';ctx.lineWidth=C*0.05;ctx.stroke();
@@ -547,7 +657,7 @@ function drawTown(){
   ctx.fillStyle='#ffe14d';ctx.beginPath();ctx.arc(view.w-50,Math.max(36,town.y*0.3),24,0,7);ctx.fill();
   ctx.fillStyle='#9fdd78';ctx.fillRect(0,town.y,view.w,view.h-town.y);
   ctx.fillStyle='#ff4f8b';ctx.font='900 '+Math.round(Math.min(40,Math.max(20,view.w*0.04)))+'px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
-  ctx.fillText('💗 我的愛心小鎮 💗'.replace(/💗/g,'♥'),view.w/2,Math.max(26,town.y*0.45));
+  ctx.fillText(T('townTitle'),view.w/2,Math.max(26,town.y*0.45));
   var occ={};save.houses.forEach(function(h){occ[h.c+','+h.r]=h;});
   for(var r=0;r<TOWN_R;r++)for(var c=0;c<TOWN_C;c++){
     var x=town.x+c*town.cw,y=town.y+r*town.ch;
@@ -562,9 +672,9 @@ function drawTown(){
     else{var bo=fxAmt(h);drawHouse(cx,by-bo*town.ch*0.1,town.cw*0.78,h.style,HOUSE_COLORS[h.color]||'#ff7aa9',h.pop);}});
   drawButterflies(list);
   if(townRemove)list.forEach(function(h){var bx=town.x+(h.c+0.85)*town.cw,by=town.y+(h.r+0.18)*town.ch,rad=Math.max(12,town.cw*0.13);ctx.fillStyle='rgba(255,59,59,.92)';ctx.beginPath();ctx.arc(bx,by,rad,0,7);ctx.fill();ctx.fillStyle='#fff';ctx.font='900 '+Math.round(rad*1.2)+'px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('✕',bx,by+1);});
-  if(!townRemove)list.forEach(function(h){if(h.pop<1||kindOf(h)!=='house')return;var tx=town.x+(h.c+0.5)*town.cw,ty=town.y+(h.r+0.93)*town.ch,fs=Math.max(11,Math.round(town.cw*0.15)),tw=fs*3.4,th=fs*1.45;
+  if(!townRemove)list.forEach(function(h){if(h.pop<1||kindOf(h)!=='house')return;var tx=town.x+(h.c+0.5)*town.cw,ty=town.y+(h.r+0.93)*town.ch,fs=Math.max(11,Math.round(town.cw*0.15)),th=fs*1.45;ctx.font='900 '+fs+'px sans-serif';var tw=Math.min(town.cw*0.98,ctx.measureText(T('enter')).width+fs);
     ctx.fillStyle='rgba(255,79,139,.92)';rr(tx-tw/2,ty-th/2,tw,th,th/2);ctx.fill();
-    ctx.fillStyle='#fff';ctx.font='900 '+fs+'px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('進去 ▶',tx,ty+1);});
+    ctx.fillStyle='#fff';ctx.font='900 '+fs+'px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(T('enter'),tx,ty+1);});
   // heart walking around
   var hx=town.x-town.cw*0.0+((time*30)%(town.cw*TOWN_C)),hy=town.y+town.ch*0.05-Math.abs(Math.sin(time*6))*8;
   drawHeart(hx,hy,town.cw*0.55,{dir:1});
@@ -575,13 +685,13 @@ function tapTown(px,py){
   var c=Math.floor((px-town.x)/town.cw),r=Math.floor((py-town.y)/town.ch);
   if(c<0||r<0||c>=TOWN_C||r>=TOWN_R)return;
   var hit=null;save.houses.forEach(function(h){if(h.c===c&&h.r===r)hit=h;});
-  if(townRemove){if(hit)removeAt(hit);else{sfx.no();buildMsg('點一下有 ✕ 的東西就可以拆掉；再按一次「🔨 拆除」結束');}return;}
+  if(townRemove){if(hit)removeAt(hit);else{sfx.no();buildMsg(T('rmHint'));}return;}
   if(hit){if(kindOf(hit)==='house')enterHouse(hit);else tapFx(hit);return;}
-  if(save.tickets<=0){sfx.no();buildMsg('沒有建造機會了 🎟️ 再去過馬路賺吧！🚗');return;}
+  if(save.tickets<=0){sfx.no();buildMsg(T('noBuilds'));return;}
   var K=save.kind,h={id:'h'+Date.now().toString(36)+Math.floor(Math.random()*1e4),kind:K,c:c,r:r,style:K==='garden'?save.gstyle:K==='pond'?save.pstyle:K==='play'?save.ystyle:save.style,color:save.color,items:[],pop:0};
   save.houses.push(h);save.tickets--;persist();if(K==='garden')sfx.bloom();else if(K==='pond')sfx.splash();else if(K==='play')sfx.boing();else sfx.place();
   for(var i=0;i<14;i++){var a=Math.random()*Math.PI*2;particles.push({x:c+0.5,y:TOWN_R-r-0.4,vx:Math.cos(a)*3,vy:Math.sin(a)*3,life:1,max:0.7,color:pick(['#ffe14d','#fff','#ff9cc2']),type:'star',s:0.12,g:0});}
-  if(save.houses.length>=TOWN_C*TOWN_R)buildMsg('🎉 哇！小鎮蓋滿了！你是超級建築師！');else buildMsg((K==='house'?'蓋好了！點一下房子可以進去擺家具 🛋️':('「'+kindName(h)+'」做好了！點一下看看會怎樣 ✨'))+(save.tickets>0?('（還有 '+save.tickets+' 個建造機會）'):''));
+  if(save.houses.length>=TOWN_C*TOWN_R)buildMsg(T('full'));else buildMsg((K==='house'?T('builtHouse'):T('builtOther',{n:kindName(h)}))+(save.tickets>0?T('left',{n:save.tickets}):''));
   updateHud();
 }
 
@@ -590,24 +700,24 @@ function makeOptions(){
   var kg=$('kindGrp'),sg=$('styleGrp'),cg=$('colorGrp');kg.innerHTML='';sg.innerHTML='';cg.innerHTML='';
   KINDS.forEach(function(K){var b=document.createElement('button');b.className='kind'+(!townRemove&&save.kind===K.k?' sel':'');b.setAttribute('data-k',K.k);b.textContent=K.e+' '+K.n;
     b.addEventListener('click',function(){save.kind=K.k;townRemove=false;persist();sfx.click();makeOptions();buildMsg();});kg.appendChild(b);});
-  var rb=document.createElement('button');rb.id='removeBtn';rb.className='kind rm'+(townRemove?' sel':'');rb.textContent=townRemove?'🔨 拆除中…':'🔨 拆除';
-  rb.addEventListener('click',function(){townRemove=!townRemove;sfx.click();makeOptions();buildMsg(townRemove?'點一下要拆掉的東西（會還你建造機會 🎟️）':'');});kg.appendChild(rb);
+  var rb=document.createElement('button');rb.id='removeBtn';rb.className='kind rm'+(townRemove?' sel':'');rb.textContent=townRemove?T('rmBtnOn'):T('rmBtn');
+  rb.addEventListener('click',function(){townRemove=!townRemove;sfx.click();makeOptions();buildMsg(townRemove?T('rmMode'):'');});kg.appendChild(rb);
   sg.style.display=cg.style.display=townRemove?'none':'';
   var list=save.kind==='garden'?GARDENS:save.kind==='pond'?PONDS:save.kind==='play'?PLAYS:STYLES,key=save.kind==='garden'?'gstyle':save.kind==='pond'?'pstyle':save.kind==='play'?'ystyle':'style';
   list.forEach(function(st,i){var b=document.createElement('button');b.className='opt'+(save[key]===i?' sel':'');b.textContent=st.e+' '+st.n;
     b.addEventListener('click',function(){save[key]=i;persist();sfx.click();makeOptions();});sg.appendChild(b);});
   if(save.kind!=='house')return;
-  HOUSE_COLORS.forEach(function(col,i){var b=document.createElement('button');b.className='sw'+(save.color===i?' sel':'');b.style.background=col;b.setAttribute('aria-label','顏色'+(i+1));
+  HOUSE_COLORS.forEach(function(col,i){var b=document.createElement('button');b.className='sw'+(save.color===i?' sel':'');b.style.background=col;b.setAttribute('aria-label',T('color')+' '+(i+1));
     b.addEventListener('click',function(){save.color=i;persist();sfx.click();makeOptions();});cg.appendChild(b);});
 }
 
 // ---------- gardens & ponds ----------
-var KINDS=[{k:'house',n:'房子',e:'🏠'},{k:'garden',n:'花園',e:'🌷'},{k:'pond',n:'池塘',e:'🦆'},{k:'play',n:'遊戲區',e:'🛝'}];
-var GARDENS=[{n:'玫瑰花園',e:'🌹'},{n:'向日葵',e:'🌻'},{n:'愛心花圃',e:'💐'},{n:'蔬果園',e:'🥕'},{n:'蘋果樹',e:'🍎'}];
-var PONDS=[{n:'小池塘',e:'🐟'},{n:'愛心池塘',e:'💗'},{n:'噴水池',e:'⛲'}];
+var KINDS=[{k:'house',n:['House','房子'],e:'🏠'},{k:'garden',n:['Garden','花園'],e:'🌷'},{k:'pond',n:['Pond','池塘'],e:'🦆'},{k:'play',n:['Playground','遊戲區'],e:'🛝'}].map(i18nName);
+var GARDENS=[{n:['Roses','玫瑰花園'],e:'🌹'},{n:['Sunflowers','向日葵'],e:'🌻'},{n:['Heart Flowers','愛心花圃'],e:'💐'},{n:['Veggie Patch','蔬果園'],e:'🥕'},{n:['Apple Tree','蘋果樹'],e:'🍎'}].map(i18nName);
+var PONDS=[{n:['Little Pond','小池塘'],e:'🐟'},{n:['Heart Pond','愛心池塘'],e:'💗'},{n:['Fountain','噴水池'],e:'⛲'}].map(i18nName);
 var townRemove=false;
 function kindOf(h){return h.kind||'house';}
-function kindName(h){var k=kindOf(h);return k==='garden'?(GARDENS[h.style]||GARDENS[0]).n:k==='pond'?(PONDS[h.style]||PONDS[0]).n:k==='play'?(PLAYS[h.style]||PLAYS[0]).n:'房子';}
+function kindName(h){var k=kindOf(h);return k==='garden'?(GARDENS[h.style]||GARDENS[0]).n:k==='pond'?(PONDS[h.style]||PONDS[0]).n:k==='play'?(PLAYS[h.style]||PLAYS[0]).n:KINDS[0].n;}
 sfx.bloom=function(){[784,988,1175,1568].forEach(function(f,i){tone(f,0.25,'triangle',0.07,null,i*0.07);});};
 sfx.quack=function(){tone(520,0.09,'sawtooth',0.07,300);tone(480,0.11,'sawtooth',0.07,260,0.13);};
 sfx.splash=function(){noise(0.25,0.08);tone(300,0.25,'sine',0.08,900);};
@@ -697,13 +807,13 @@ function drawButterflies(list){
 function tapFx(h){
   if(kindOf(h)==='play'){playFx(h);return;}
   h.fxT=time;var k=kindOf(h);var cx=h.c+0.5,cy=TOWN_R-h.r-0.5;
-  if(k==='garden'){sfx.bloom();buildMsg(pick(['花開得好漂亮！🌸','蝴蝶飛來了！🦋','香香的～ 🌷']));
+  if(k==='garden'){sfx.bloom();buildMsg(pick(T('tapGarden')));
     for(var i=0;i<12;i++){var a=Math.random()*Math.PI*2;particles.push({x:cx,y:cy,vx:Math.cos(a)*2,vy:Math.sin(a)*2+1,life:1,max:1,color:pick(['#ff9cc2','#ffd23f','#ff4f8b','#fff']),type:'heart',s:0.08,g:1});}}
-  else{if(h.style===2){sfx.splash();buildMsg('噴水池噴好高！⛲');}else{sfx.quack();buildMsg(pick(['呱呱！🦆','小魚游來游去 🐟','撲通！💦']));}
+  else{if(h.style===2){sfx.splash();buildMsg(T('tapFountain'));}else{sfx.quack();buildMsg(pick(T('tapPond')));}
     for(var j=0;j<10;j++){particles.push({x:cx+rnd(-0.2,0.2),y:cy+0.1,vx:rnd(-1,1),vy:rnd(2,4),life:1,max:0.8,color:pick(['#bfe9ff','#7fd3ff','#fff']),type:'dot',s:0.07});}}
 }
 // ---------- playground (遊戲區) ----------
-var PLAYS=[{n:'溜滑梯',e:'🛝'},{n:'盪鞦韆',e:'🎠'},{n:'蹺蹺板',e:'⚖️'},{n:'攀爬架',e:'🧗'},{n:'沙坑',e:'🏖️'},{n:'籃球場',e:'🏀'},{n:'游泳池',e:'🏊'}];
+var PLAYS=[{n:['Slide','溜滑梯'],e:'🛝'},{n:['Swings','盪鞦韆'],e:'🎠'},{n:['Seesaw','蹺蹺板'],e:'⚖️'},{n:['Climbing Frame','攀爬架'],e:'🧗'},{n:['Sandbox','沙坑'],e:'🏖️'},{n:['Basketball','籃球場'],e:'🏀'},{n:['Pool','游泳池'],e:'🏊'}].map(i18nName);
 sfx.whee=function(){tone(900,0.6,'sine',0.08,300);};
 sfx.boing=function(){tone(180,0.25,'sine',0.14,420);};
 sfx.climb=function(){[523,587,659,784,1047].forEach(function(f,i){tone(f,0.12,'square',0.05,null,i*0.2);});};
@@ -796,29 +906,30 @@ function drawPlay(cx,base,s,v,h){
 }
 function playFx(h){
   h.fxT=time;var v=h.style,cx=h.c+0.5,cy=TOWN_R-h.r-0.5;
-  if(v===0){sfx.whee();buildMsg('咻～溜下來了！🛝');}
-  else if(v===1){sfx.woosh();buildMsg('盪得好高喔！🎠');}
-  else if(v===2){sfx.boing();buildMsg('蹺蹺板上上下下！⚖️');}
-  else if(v===3){sfx.climb();buildMsg('爬到最上面了！⭐');}
-  else if(v===4){h.cs=((h.cs||0)+1)%4;persist();sfx.sand();buildMsg(h.cs?['','蓋沙堡中…🏖️','沙堡越來越高！','沙堡完成了！🏰'][h.cs]:'沙堡推平了，再蓋一次吧！');}
-  else if(v===5){sfx.swish();buildMsg('投籃…進了！🏀');setTimeout(function(){floaters.push({x:cx+0.3,y:cy+0.7,t:0,txt:'+2'});},950);}
-  else{sfx.splash();buildMsg('撲通！游泳好好玩 🏊');for(var j=0;j<12;j++)particles.push({x:cx+rnd(-0.3,0.3),y:cy,vx:rnd(-1.2,1.2),vy:rnd(2,4),life:1,max:0.8,color:pick(['#bfe9ff','#7fd3ff','#fff']),type:'dot',s:0.07});}
+  if(v===0){sfx.whee();buildMsg(T('tapSlide'));}
+  else if(v===1){sfx.woosh();buildMsg(T('tapSwing'));}
+  else if(v===2){sfx.boing();buildMsg(T('tapSeesaw'));}
+  else if(v===3){sfx.climb();buildMsg(T('tapClimb'));}
+  else if(v===4){h.cs=((h.cs||0)+1)%4;persist();sfx.sand();buildMsg(h.cs?T('tapSand')[h.cs]:T('tapSandReset'));}
+  else if(v===5){sfx.swish();buildMsg(T('tapBall'));setTimeout(function(){floaters.push({x:cx+0.3,y:cy+0.7,t:0,txt:'+2'});},950);}
+  else{sfx.splash();buildMsg(T('tapPool'));for(var j=0;j<12;j++)particles.push({x:cx+rnd(-0.3,0.3),y:cy,vx:rnd(-1.2,1.2),vy:rnd(2,4),life:1,max:0.8,color:pick(['#bfe9ff','#7fd3ff','#fff']),type:'dot',s:0.07});}
 }
 
 function removeAt(h){
-  var nm=kindName(h),msg=kindOf(h)==='house'?('要拆掉這棟房子嗎？裡面的家具也會不見喔！（會還你 1 個建造機會）'):('要拆掉「'+nm+'」嗎？（會還你 1 個建造機會）');
+  var nm=kindName(h),msg=kindOf(h)==='house'?T('cfHouse'):T('cfOther',{n:nm});
   if(!confirm(msg))return;
   var i=save.houses.indexOf(h);if(i>=0)save.houses.splice(i,1);save.tickets++;persist();tone(400,0.15,'square',0.06,150);
   for(var p=0;p<12;p++){var a=Math.random()*Math.PI*2;particles.push({x:h.c+0.5,y:TOWN_R-h.r-0.5,vx:Math.cos(a)*2.5,vy:Math.sin(a)*2.5,life:1,max:0.6,color:pick(['#ccc','#fff','#e0c9a6']),type:'dot',s:0.1,g:0});}
-  buildMsg('拆掉了！可以在這裡蓋新的東西（還有 '+save.tickets+' 個建造機會 🎟️）');updateHud();
+  buildMsg(T('removed',{n:save.tickets}));updateHud();
 }
 
 // ---------- house interiors ----------
 var FURN={
-  bed:{n:'床',w:.27,h:.17}, sofa:{n:'沙發',w:.24,h:.13}, table:{n:'桌子',w:.16,h:.1}, chair:{n:'椅子',w:.07,h:.13},
-  tv:{n:'電視',w:.14,h:.15}, lamp:{n:'燈',w:.07,h:.22}, plant:{n:'盆栽',w:.08,h:.14}, rug:{n:'地毯',w:.28,h:.06,flat:true},
-  wardrobe:{n:'衣櫃',w:.13,h:.27}, fridge:{n:'冰箱',w:.1,h:.25}, shelf:{n:'書架',w:.14,h:.22}, pillow:{n:'愛心抱枕',w:.06,h:.06}
+  bed:{n:['Bed','床'],w:.27,h:.17}, sofa:{n:['Sofa','沙發'],w:.24,h:.13}, table:{n:['Table','桌子'],w:.16,h:.1}, chair:{n:['Chair','椅子'],w:.07,h:.13},
+  tv:{n:['TV','電視'],w:.14,h:.15}, lamp:{n:['Lamp','燈'],w:.07,h:.22}, plant:{n:['Plant','盆栽'],w:.08,h:.14}, rug:{n:['Rug','地毯'],w:.28,h:.06,flat:true},
+  wardrobe:{n:['Wardrobe','衣櫃'],w:.13,h:.27}, fridge:{n:['Fridge','冰箱'],w:.1,h:.25}, shelf:{n:['Bookshelf','書架'],w:.14,h:.22}, pillow:{n:['Heart Pillow','愛心抱枕'],w:.06,h:.06}
 };
+Object.keys(FURN).forEach(function(k){i18nName(FURN[k]);});
 var FURN_ORDER=['bed','sofa','table','chair','tv','lamp','plant','rug','wardrobe','fridge','shelf','pillow'];
 var curHouse=null,room={x:0,y:0,w:0,h:0},furnSel=null,trashMode=false,selItem=null,drag=null,overTrash=false,roomFx=[];
 function rrg(g,x,y,w,h,r){r=Math.max(0,Math.min(r,w/2,h/2));g.beginPath();g.moveTo(x+r,y);g.arcTo(x+w,y,x+w,y+h,r);g.arcTo(x+w,y+h,x,y+h,r);g.arcTo(x,y+h,x,y,r);g.arcTo(x,y,x+w,y,r);g.closePath();}
@@ -920,20 +1031,20 @@ function makeFurnPalette(){
     var im=document.createElement('img');im.src=c.toDataURL();im.alt='';b.appendChild(im);
     var sp=document.createElement('span');sp.textContent=d.n;b.appendChild(sp);
     b.addEventListener('click',function(){unlockAudio();sfx.click();furnSel=(furnSel===t?null:t);trashMode=false;updateRoomUi();
-      roomMsg(furnSel?('點一下房間，把「'+d.n+'」放上去！'):'選一個家具，再點房間放上去！');});
+      roomMsg(furnSel?T('placeSel',{n:d.n}):T('roomMsg0'));});
     grp.appendChild(b);
   });
 }
 function updateRoomUi(){
   document.querySelectorAll('#furnGrp .furn').forEach(function(b){b.classList.toggle('sel',b.getAttribute('data-t')===furnSel);});
-  $('trashBtn').classList.toggle('sel',trashMode);$('trashBtn').textContent=trashMode?'🗑️ 刪除中…(點家具)':'🗑️ 刪除模式';
+  $('trashBtn').classList.toggle('sel',trashMode);$('trashBtn').textContent=trashMode?T('trashOn'):T('trash');
 }
 function roomMsg(m){$('roomMsg').textContent=m;}
 function enterHouse(h){
   if(!h)return;unlockAudio();curHouse=h;mode='room';furnSel=null;trashMode=false;selItem=null;drag=null;roomFx=[];
   hideAll();$('roomBar').classList.remove('hidden');document.body.classList.remove('building');document.body.classList.add('inroom');
   tone(660,0.1,'triangle',0.12);tone(880,0.14,'triangle',0.12,null,0.09);
-  updateRoomUi();roomMsg(h.items.length?'歡迎回家！可以拖曳家具換位置 💗':'空空的房間～選一個家具，再點房間放上去！');resize();
+  updateRoomUi();roomMsg(h.items.length?T('welcome'):T('emptyMsg'));resize();
 }
 function layoutRoom(){
   var barH=$('roomBar').offsetHeight||0,avail=view.h-barH-14;
@@ -951,21 +1062,21 @@ function inTrash(px,py){var t=trashPos();return Math.hypot(px-t.x,py-t.y)<t.r+12
 function poof(it){var r=itemRect(it);for(var i=0;i<12;i++){var a=Math.random()*Math.PI*2;
   roomFx.push({x:r.cx,y:r.by-r.h/2,vx:Math.cos(a)*120,vy:Math.sin(a)*120,life:1,c:pick(['#fff','#ffe14d','#ff9cc2'])});}}
 function removeItem(it){poof(it);var i=curHouse.items.indexOf(it);if(i>=0)curHouse.items.splice(i,1);if(selItem===it)selItem=null;persist();
-  tone(500,0.15,'square',0.07,120);roomMsg('「'+FURN[it.t].n+'」拿走了！');}
+  tone(500,0.15,'square',0.07,120);roomMsg(T('taken',{n:FURN[it.t].n}));}
 function roomDown(px,py){
   layoutRoom();var it=hitItem(px,py);
   if(it&&trashMode){removeItem(it);return;}
   if(it){selItem=it;var r=itemRect(it);drag={it:it,ox:px-r.cx,oy:py-r.by,sx:px,sy:py,moved:false,placeIfTap:!!furnSel};
     var i=curHouse.items.indexOf(it);curHouse.items.splice(i,1);curHouse.items.push(it);return;}
   if(px<room.x||px>room.x+room.w||py<room.y||py>room.y+room.h){selItem=null;return;}
-  if(trashMode){roomMsg('點一下要拿走的家具，或再按一次「刪除模式」結束');return;}
-  if(!furnSel){selItem=null;roomMsg('先在下面選一個家具喔！👇');sfx.no();return;}
+  if(trashMode){roomMsg(T('trashHint'));return;}
+  if(!furnSel){selItem=null;roomMsg(T('pickFirst'));sfx.no();return;}
   placeAt(px,py);
 }
 function placeAt(px,py){
   var d=FURN[furnSel],n={t:furnSel,x:(px-room.x)/room.w,y:(py-room.y)/room.h+d.h*room.w/room.h/2,f:false};
   clampItem(n);curHouse.items.push(n);selItem=n;n.pop=0;persist();sfx.place();
-  roomMsg('放好「'+d.n+'」了！可以拖曳移動，或按 🔄 翻轉');
+  roomMsg(T('placed',{n:d.n}));
 }
 function roomMove(px,py){
   if(!drag)return;layoutRoom();
@@ -977,7 +1088,7 @@ function roomUp(px,py,cancel){
   if(!drag)return;var it=drag.it;
   if(!cancel&&drag.moved&&inTrash(px,py)){removeItem(it);}
   else if(!drag.moved&&drag.placeIfTap&&furnSel){drag=null;placeAt(px,py);return;}
-  else{persist();if(drag.moved)tone(440,0.06,'sine',0.08);else roomMsg('選到「'+FURN[it.t].n+'」：拖曳移動、🔄 翻轉，或拖到 🗑️ 丟掉');}
+  else{persist();if(drag.moved)tone(440,0.06,'sine',0.08);else roomMsg(T('selected',{n:FURN[it.t].n}));}
   drag=null;overTrash=false;
 }
 function drawRoom(){
@@ -1006,7 +1117,7 @@ function drawRoom(){
     if(trashMode){ctx.fillStyle='rgba(255,59,59,.9)';ctx.beginPath();ctx.arc(r.x+r.w,r.y,11,0,7);ctx.fill();ctx.fillStyle='#fff';ctx.font='900 14px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('✕',r.x+r.w,r.y+1);}
   });
   if(!curHouse.items.length){ctx.fillStyle='rgba(90,35,64,.45)';ctx.font='900 '+Math.round(R.w*0.04)+'px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
-    ctx.fillText('空空的房間～放一些家具吧！',R.x+R.w/2,R.y+R.h*0.7);}
+    ctx.fillText(T('emptyCanvas'),R.x+R.w/2,R.y+R.h*0.7);}
   // trash can
   var t=trashPos(),on=drag&&drag.moved;
   ctx.globalAlpha=on?1:0.55;ctx.fillStyle=overTrash?'#ff3b3b':'#ffffff';ctx.beginPath();ctx.arc(t.x,t.y,t.r*(overTrash?1.2:1),0,7);ctx.fill();
@@ -1016,11 +1127,11 @@ function drawRoom(){
   ctx.strokeStyle=shade(A,-0.2);ctx.lineWidth=5;rr(R.x,R.y,R.w,R.h,18);ctx.stroke();
   roomFx=roomFx.filter(function(p){p.life-=0.03;p.x+=p.vx/60;p.y+=p.vy/60;ctx.globalAlpha=Math.max(0,p.life);ctx.fillStyle=p.c;star(p.x,p.y,7);ctx.fill();return p.life>0;});ctx.globalAlpha=1;
 }
-$('backBtn').addEventListener('click',function(){unlockAudio();sfx.click();persist();enterBuild('回到小鎮了！點房子可以再進去 🏠');});
-$('flipBtn').addEventListener('click',function(){unlockAudio();if(!selItem){sfx.no();roomMsg('先點一下要翻轉的家具喔！');return;}selItem.f=!selItem.f;persist();sfx.click();});
+$('backBtn').addEventListener('click',function(){unlockAudio();sfx.click();persist();enterBuild(T('backTown'));});
+$('flipBtn').addEventListener('click',function(){unlockAudio();if(!selItem){sfx.no();roomMsg(T('flipFirst'));return;}selItem.f=!selItem.f;persist();sfx.click();});
 $('trashBtn').addEventListener('click',function(){unlockAudio();sfx.click();trashMode=!trashMode;furnSel=null;selItem=null;updateRoomUi();
-  roomMsg(trashMode?'點一下要拿走的家具（也可以把家具拖到 🗑️）':'結束刪除模式');});
-$('emptyBtn').addEventListener('click',function(){if(!curHouse||!curHouse.items.length)return;if(confirm('要把這間房子的家具全部拿走嗎？')){curHouse.items.length=0;selItem=null;persist();roomMsg('房間清空了！');}});
+  roomMsg(trashMode?T('trashOnMsg'):T('trashOffMsg'));});
+$('emptyBtn').addEventListener('click',function(){if(!curHouse||!curHouse.items.length)return;if(confirm(T('cfRoom'))){curHouse.items.length=0;selItem=null;persist();roomMsg(T('roomCleared'));}});
 
 // ---------- layout ----------
 function resize(){
@@ -1074,7 +1185,7 @@ $('retryBtn').addEventListener('click',function(){unlockAudio();sfx.click();star
 $('goBtn').addEventListener('click',function(){unlockAudio();sfx.click();startPlay();});
 $('townBtn').addEventListener('click',function(){unlockAudio();sfx.click();enterBuild();});
 $('muteBtn').addEventListener('click',function(){unlockAudio();save.muted=!save.muted;persist();updateHud();sfx.click();});
-$('clearBtn').addEventListener('click',function(){if(confirm('真的要把小鎮全部清掉嗎？')){save.houses.length=0;persist();buildMsg('小鎮清空了，重新蓋吧！');updateHud();}});
+$('clearBtn').addEventListener('click',function(){if(confirm(T('cfTown'))){save.houses.length=0;persist();buildMsg(T('townCleared'));updateHud();}});
 
 // ---------- loop ----------
 var last=performance.now();
@@ -1082,12 +1193,26 @@ function frame(now){var dt=Math.min(0.05,(now-last)/1000);last=now;
   update(dt);
   if(mode==='build')drawTown();else if(mode==='room')drawRoom();else drawWorld();
   requestAnimationFrame(frame);}
-makeOptions();makeFurnPalette();buildLevel();updateHud();
+// ---------- language switching ----------
+function applyLang(){
+  document.documentElement.lang=LANG==='zh'?'zh-Hant':'en';document.title=T('docTitle');
+  var am=document.querySelector('meta[name="apple-mobile-web-app-title"]');if(am)am.setAttribute('content',LANG==='zh'?'愛心過馬路':'Heart Crossing');
+  document.querySelectorAll('[data-i18n]').forEach(function(el){el.innerHTML=T(el.getAttribute('data-i18n'));});
+  document.querySelectorAll('[data-i18n-aria]').forEach(function(el){el.setAttribute('aria-label',T(el.getAttribute('data-i18n-aria')));});
+  $('langBtn').textContent=LANG==='zh'?'EN':'中文';$('langBtn2').textContent=LANG==='zh'?'🌐 English':'🌐 中文';
+  makeOptions();makeFurnPalette();updateRoomUi();updateHud();updateGoBtn();
+  if(mode==='build')buildMsg();if(mode==='room'&&curHouse)roomMsg(curHouse.items.length?T('welcome'):T('emptyMsg'));
+}
+function setLang(l){LANG=l==='zh'?'zh':'en';try{localStorage.setItem('heartLang',LANG);}catch(e){}applyLang();if(typeof resize==='function')setTimeout(resize,30);}
+function toggleLang(){unlockAudio();sfx.click();setLang(LANG==='zh'?'en':'zh');}
+$('langBtn').addEventListener('click',toggleLang);$('langBtn2').addEventListener('click',toggleLang);
+
+makeOptions();makeFurnPalette();buildLevel();updateHud();applyLang();
 // test hooks via URL hash (e.g. #build)
 if(location.hash==='#build'){enterBuild();}
 else if(location.hash==='#play'){startPlay();}
 requestAnimationFrame(frame);
-window.__game={get lights(){return lights;},get rows(){return rows;},get player(){return player;},move:move,get mode(){return mode;},save:save,startPlay:startPlay,enterHouse:enterHouse,enterBuild:enterBuild,roomRect:function(){layoutRoom();return {x:room.x,y:room.y,w:room.w,h:room.h};},itemRect:function(it){layoutRoom();return itemRect(it);},trashPos:function(){layoutRoom();return trashPos();},get curHouse(){return curHouse;},townRect:function(){layoutTown();return {x:town.x,y:town.y,cw:town.cw,ch:town.ch};}};
+window.__game={setLang:setLang,get lang(){return LANG;},get lights(){return lights;},get rows(){return rows;},get player(){return player;},move:move,get mode(){return mode;},save:save,startPlay:startPlay,enterHouse:enterHouse,enterBuild:enterBuild,roomRect:function(){layoutRoom();return {x:room.x,y:room.y,w:room.w,h:room.h};},itemRect:function(it){layoutRoom();return itemRect(it);},trashPos:function(){layoutRoom();return trashPos();},get curHouse(){return curHouse;},townRect:function(){layoutTown();return {x:town.x,y:town.y,cw:town.cw,ch:town.ch};}};
 })();
 </script>
 </body>

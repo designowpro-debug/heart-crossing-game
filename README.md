@@ -1,20 +1,63 @@
-# 💗 愛心過馬路 Heart Crossing Game
+<div align="center">
 
-幫小愛心穿過車子很多的馬路，過完馬路就可以蓋房子，蓋出自己的愛心小鎮！
-用方向鍵或螢幕上的大箭頭按鈕移動（也可以在畫面上滑一下）。被車撞到就要重新開始，但是蓋好的房子會一直留著。
+# 💗 Heart Crossing · 愛心過馬路
 
-Single-file HTML5 canvas game (`index.html`) built for iPad/Safari touch and desktop keyboards.
+**Hop a little heart across busy roads — then build your own cute town!**
+A free, cozy browser game for kids (and grown-ups). No install, no ads, no sign-up.
 
-## 新功能：進去房子佈置 🛋️
-在小鎮裡點空地蓋房子，點房子就可以進去！每間房子一開始都是空的，可以擺床、沙發、桌子、椅子、電視、燈、盆栽、地毯、衣櫃、冰箱、書架、愛心抱枕。拖曳可以移動，🔄 翻轉，🗑️ 刪除。
+### [▶ Play now](https://designowpro-debug.github.io/heart-crossing-game/)
 
-## 新功能：愛心紅綠燈 🚦
-每一段馬路都有斑馬線和愛心形狀的紅綠燈。愛心紅燈亮的時候，車子會慢慢停在停止線前面排隊，趁這時候從斑馬線過馬路最安全！綠燈車子又會開走。
+[English](https://designowpro-debug.github.io/heart-crossing-game/?lang=en) · [中文](https://designowpro-debug.github.io/heart-crossing-game/?lang=zh)
 
-## 新功能：花園和池塘 🌷🦆
-小鎮裡除了房子，還可以蓋花園（玫瑰花園、向日葵、愛心花圃、蔬果園、蘋果樹）和池塘（小池塘、愛心池塘、噴水池）。每過一次馬路就得到 1 個建造機會 🎟️，蓋什麼都用 1 個。點花園會開花、點池塘鴨子會呱呱叫！用「🔨 拆除」可以拆掉（會退回建造機會）。
+<img src="og-image.png" alt="Heart Crossing preview" width="720">
 
-## 新功能：遊戲區 🛝
-可以蓋溜滑梯、盪鞦韆、蹺蹺板、攀爬架、沙坑、籃球場、游泳池！點一下會動：愛心溜下來、鞦韆盪更高、蹺蹺板翹起來、爬到最上面、蓋沙堡、投籃進球、跳進泳池。
+</div>
 
-Play: https://designowpro-debug.github.io/heart-crossing-game/
+## ✨ Features
+
+- 🚗 **Road crossing** — dodge colorful cars and trucks in lanes that get busier every level
+- 🚦 **Heart-shaped traffic lights** — on red, cars brake and queue up so you can hop over the zebra crossing
+- 🏠 **Build a town** — every successful crossing earns a build: houses (4 styles, 6 colors), gardens, ponds and playgrounds
+- 🛋️ **Go inside your houses** — decorate each room with 12 kinds of furniture: drag, flip and remove
+- 🌷 **Living town** — swaying flowers, butterflies, ducks and fish, a fountain, swings, a slide, a seesaw, a sandbox, a basketball court and a pool. Tap them for fun animations!
+- 🌐 **English & 中文** — switch any time with the language button
+- 📱 **iPad & phone friendly** — big touch buttons, swipe controls, works in portrait and landscape, add to Home Screen for fullscreen
+- 💾 **Saves automatically** in your browser — works offline once loaded, it's a single HTML file
+
+## 🎮 How to play
+
+1. Tap **Play**. Move with the big arrow buttons, by swiping, or with the arrow keys / WASD (tap the screen = hop forward).
+2. Watch the heart traffic lights: **red heart = cars stop** → cross at the zebra crossing!
+3. If a car bonks you, just try again. Your town is always kept.
+4. Reach the **FINISH** row to earn a build 🎟️, then tap an empty spot in your town to build.
+5. Tap a house to go inside and decorate. Tap gardens, ponds and playground items to see what happens!
+
+## 📸 Screenshots
+
+| Title | Crossing (portrait) | Town |
+|---|---|---|
+| <img src="screenshots/title.png" width="280"> | <img src="screenshots/play-portrait.png" width="200"> | <img src="screenshots/town.png" width="280"> |
+
+| Inside a house | Heart traffic lights | 中文版 Playground |
+|---|---|---|
+| <img src="screenshots/room.png" width="280"> | <img src="screenshots/traffic-lights.png" width="280"> | <img src="screenshots/playground-zh.png" width="280"> |
+
+## 🛠️ Tech
+
+One self-contained `index.html`: HTML5 canvas, vanilla JavaScript and the Web Audio API. No frameworks, no build step, no external requests. To run it locally, just download `index.html` and open it.
+
+## 📄 License
+
+[MIT](LICENSE) © 2026 designowpro-debug. Have fun, remix it, share it! If you enjoy the game, please ⭐ star the repo.
+
+---
+
+## 🇹🇼 中文介紹
+
+**愛心過馬路** 是一款可愛的免費網頁小遊戲：幫小愛心穿過好多車子的馬路，看**愛心紅綠燈**——紅燈時車子會停下來，從斑馬線過最安全！
+每成功過一次馬路就得到 1 個建造機會，可以在自己的小鎮蓋**房子、花園、池塘、遊戲區**（溜滑梯、盪鞦韆、蹺蹺板、攀爬架、沙坑、籃球場、游泳池），還可以**走進房子擺家具**。
+
+- ▶ 馬上玩：<https://designowpro-debug.github.io/heart-crossing-game/?lang=zh>
+- 支援 iPad、手機和電腦；可以「加入主畫面」全螢幕玩
+- 右上角按鈕可以切換 **English / 中文**
+- 遊戲進度會自動存在瀏覽器裡
