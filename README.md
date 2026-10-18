@@ -20,6 +20,7 @@ A free, cozy browser game for kids (and grown-ups). No install, no ads, no sign-
 - 🏠 **Build a town** — every successful crossing earns a build: houses (4 styles, 6 colors), gardens, ponds and playgrounds
 - 🛋️ **Go inside your houses** — decorate each room with 12 kinds of furniture: drag, flip and remove
 - 🌷 **Living town** — swaying flowers, butterflies, ducks and fish, a fountain, swings, a slide, a seesaw, a sandbox, a basketball court and a pool. Tap them for fun animations!
+- 📸 **Share your town** — one tap makes a cute picture of your town (or "I cleared Level N!") to share or save, no accounts or tracking
 - 🌐 **English & 中文** — switch any time with the language button
 - 📱 **iPad & phone friendly** — big touch buttons, swipe controls, works in portrait and landscape, add to Home Screen for fullscreen
 - 💾 **Saves automatically** in your browser — works offline once loaded, it's a single HTML file
@@ -42,6 +43,8 @@ A free, cozy browser game for kids (and grown-ups). No install, no ads, no sign-
 |---|---|---|
 | <img src="screenshots/room.png" width="280"> | <img src="screenshots/traffic-lights.png" width="280"> | <img src="screenshots/playground-zh.png" width="280"> |
 
+<p align="center"><b>Share image</b><br><img src="screenshots/share-town.png" width="360" alt="Share my town image"></p>
+
 ## 🛠️ Tech
 
 One self-contained `index.html`: HTML5 canvas, vanilla JavaScript and the Web Audio API. No frameworks, no build step, no external requests. To run it locally, just download `index.html` and open it.
@@ -60,4 +63,5 @@ One self-contained `index.html`: HTML5 canvas, vanilla JavaScript and the Web Au
 - ▶ 馬上玩：<https://designowpro-debug.github.io/heart-crossing-game/?lang=zh>
 - 支援 iPad、手機和電腦；可以「加入主畫面」全螢幕玩
 - 右上角按鈕可以切換 **English / 中文**
+- 📸「分享我的小鎮」：一鍵做出可愛的小鎮圖片，可以分享或存起來
 - 遊戲進度會自動存在瀏覽器裡
