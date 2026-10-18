@@ -8,4 +8,7 @@ Single-file HTML5 canvas game (`index.html`) built for iPad/Safari touch and des
 ## 新功能：進去房子佈置 🛋️
 在小鎮裡點空地蓋房子，點房子就可以進去！每間房子一開始都是空的，可以擺床、沙發、桌子、椅子、電視、燈、盆栽、地毯、衣櫃、冰箱、書架、愛心抱枕。拖曳可以移動，🔄 翻轉，🗑️ 刪除。
 
+## 新功能：愛心紅綠燈 🚦
+每一段馬路都有斑馬線和愛心形狀的紅綠燈。愛心紅燈亮的時候，車子會慢慢停在停止線前面排隊，趁這時候從斑馬線過馬路最安全！綠燈車子又會開走。
+
 Play: https://designowpro-debug.github.io/heart-crossing-game/

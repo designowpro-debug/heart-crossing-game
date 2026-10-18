@@ -59,6 +59,9 @@ canvas{position:absolute;left:0;top:0;display:block;touch-action:none;}
 #buildBar .big{margin:0;padding:10px 20px;font-size:1.15em;}
 #clearBtn{background:none;color:#c98aa5;font-size:.8em;text-decoration:underline;}
 body.building #pad,body.inroom #pad{display:none;}
+#hint{position:absolute;left:50%;top:10px;transform:translateX(-50%);z-index:6;background:rgba(255,255,255,.95);color:#ff4f8b;
+  font-weight:900;font-size:clamp(15px,2.4vmin,22px);padding:8px 16px;border-radius:999px;box-shadow:0 4px 0 #ffb3cf;
+  pointer-events:none;white-space:nowrap;max-width:96%;overflow:hidden;text-overflow:ellipsis;transition:opacity .5s;}
 #roomBar{position:absolute;left:0;right:0;bottom:0;z-index:8;padding:6px 8px 10px;background:rgba(255,255,255,.95);
   border-top:4px solid #ffb3cf;display:flex;flex-direction:column;gap:6px;align-items:center;font-size:clamp(15px,2.3vmin,20px);font-weight:800;}
 #roomMsg{text-align:center;color:#ff4f8b;font-size:1.05em;min-height:1.3em;}
@@ -90,11 +93,13 @@ body.building #pad,body.inroom #pad{display:none;}
           <h1>💗 愛心過馬路 💗</h1>
           <p>幫小愛心穿過好多車子的馬路！</p>
           <p>👆 用<b>大箭頭按鈕</b>，或在畫面上<b>滑一下</b>來移動<br>（點一下畫面 = 往前跳）</p>
+          <p>🚦 看<b>愛心紅綠燈</b>：紅燈時車子會停下來，從<b>斑馬線</b>過最安全！</p>
           <p>🚗 小心車子！被撞到就要重新開始<br>🏠 過完馬路就可以<b>蓋房子</b>喔！</p>
           <button class="big" id="startBtn">開始遊戲</button>
           <button class="big alt" id="townBtn">看我的小鎮</button>
         </div>
       </div>
+      <div id="hint" class="hidden">🚦 等愛心紅燈亮，車子會停下來，從斑馬線快快過！</div>
       <div class="overlay hidden" id="crashScreen">
         <div class="card">
           <h2>💥 被撞到了！</h2>
@@ -202,7 +207,7 @@ var STYLES=[{n:'小屋',e:'🏠'},{n:'高樓',e:'🏢'},{n:'城堡',e:'🏰'},{n
 
 // ---------- game state ----------
 var mode='title'; // title | play | crash | win | build
-var rows=[],player,particles=[],floaters=[],shake=0,timer=0,queued=null,maxRow=0,time=0;
+var lights=[],rows=[],player,particles=[],floaters=[],shake=0,timer=0,queued=null,maxRow=0,time=0;
 var view={w:0,h:0,cell:40,ox:0,oy:0};
 
 function buildLevel(){
@@ -220,6 +225,16 @@ function buildLevel(){
     rows.push({type:'road',dir:dir,speed:speed,cars:cars,span:span});since++;
   }
   rows.push({type:'goal'});
+  // heart traffic lights: one per road segment, crosswalk column cw
+  lights=[];var seg=null;
+  for(var ri=0;ri<rows.length;ri++){
+    if(rows[ri].type==='road'){
+      if(!seg){var G=3.4+Math.min(L,8)*0.15,Y=1.0,Rd=Math.max(2.2,3.4-L*0.12);
+        seg={cw:2+Math.floor(Math.random()*5),first:ri,last:ri,G:G,Y:Y,R:Rd,t:Math.random()*(G+Y+Rd),state:'green'};lights.push(seg);}
+      seg.last=ri;rows[ri].light=seg;rows[ri].cw=seg.cw;
+    }else seg=null;
+  }
+  lights.forEach(updLightState);
   // coins
   var roadIdx=[];rows.forEach(function(r,i){if(r.type==='road')roadIdx.push(i);});
   var nc=Math.min(2+Math.floor(L/2),5);
@@ -229,8 +244,9 @@ function buildLevel(){
   resize();
 }
 
-function startPlay(){unlockAudio();hideAll();document.body.classList.remove('building','inroom');buildLevel();mode='play';updateHud();}
-function hideAll(){['titleScreen','crashScreen','buildBar','roomBar'].forEach(function(id){$(id).classList.add('hidden');});}
+var hintTimer=null;function showHint(){var h=$('hint');h.classList.remove('hidden');h.style.opacity='1';clearTimeout(hintTimer);hintTimer=setTimeout(function(){h.style.opacity='0';setTimeout(function(){h.classList.add('hidden');},500);},4500);}
+function startPlay(){unlockAudio();setTimeout(showHint,0);hideAll();document.body.classList.remove('building','inroom');buildLevel();mode='play';updateHud();}
+function hideAll(){['titleScreen','crashScreen','buildBar','roomBar','hint'].forEach(function(id){$(id).classList.add('hidden');});}
 
 function move(dir){
   if(mode!=='play'||player.dead)return;
@@ -283,9 +299,9 @@ function updateHud(){
 // ---------- update ----------
 function update(dt){
   time+=dt;
-  rows.forEach(function(r){if(r.type!=='road')return;
-    r.cars.forEach(function(c){c.x+=r.dir*r.speed*dt;
-      if(r.dir>0&&c.x>COLS+3)c.x-=r.span;if(r.dir<0&&c.x+c.len<-3)c.x+=r.span;});});
+  lights.forEach(function(l){var prev=l.state;l.t+=dt;updLightState(l);
+    if(prev!==l.state&&l.state==='red'&&mode==='play'&&player&&Math.abs(player.r-l.first)<=2)tone(1047,0.12,'sine',0.05);});
+  rows.forEach(function(r){if(r.type==='road')updateLane(r,dt);});
   if(player&&mode==='play'){
     if(player.t<1){player.t=Math.min(1,player.t+dt/0.14);
       if(player.t>=1){
@@ -312,6 +328,52 @@ function update(dt){
   townAnim.forEach(function(h){if(h.pop<1)h.pop=Math.min(1,h.pop+dt*3);});
 }
 
+function updLightState(l){var cyc=l.G+l.Y+l.R,ph=((l.t%cyc)+cyc)%cyc;l.state=ph<l.G?'green':(ph<l.G+l.Y?'yellow':'red');l.left=ph<l.G?l.G-ph:(ph<l.G+l.Y?l.G+l.Y-ph:cyc-ph);}
+var BRAKE=7,ACCEL=3.5;
+function laneStop(r){return r.dir>0?r.cw-0.12:-(r.cw+1+0.12);}
+function updateLane(r,dt){
+  var Lt=r.light,span=r.span,S=Lt?laneStop(r):0;
+  var fr=r.cars.map(function(c){return r.dir>0?c.x+c.len:-c.x;});
+  r.cars.forEach(function(c,i){
+    var f=fr[i];if(c.v===undefined)c.v=r.speed;
+    var gap=Infinity;
+    for(var j=0;j<r.cars.length;j++){if(j===i)continue;var g=(((fr[j]-r.cars[j].len)-f)%span+span)%span;if(g<gap)gap=g;}
+    var lim=gap-0.3;
+    if(Lt){var d=S-f;
+      if(d<-0.05){c.run=false;}
+      else if(Lt.state!=='green'&&!c.run){
+        if(Lt.state==='yellow'&&d<c.v*c.v/(2*BRAKE)*0.9&&d<1.5)c.run=true; // too close to stop safely: keep going
+        else lim=Math.min(lim,d);
+      }
+      if(Lt.state==='green')c.run=false;
+    }
+    var target=Math.min(r.speed,Math.sqrt(2*BRAKE*Math.max(0,lim)));
+    if(target<c.v)c.v=target;else c.v=Math.min(target,c.v+ACCEL*dt);
+    var step=Math.min(c.v*dt,Math.max(0,lim));
+    c.x+=r.dir*step;
+    if(r.dir>0&&c.x>COLS+3)c.x-=span;if(r.dir<0&&c.x+c.len<-3)c.x+=span;
+  });
+}
+function drawLight(l){
+  var C=view.cell,x0=view.ox,gy=rowY(l.first-1),cw=l.cw;
+  var hx=x0+(cw+1)*C+C*0.06,hw=C*1.0,hh=C*0.4,hy=gy+C*0.08;
+  // pole
+  ctx.fillStyle='#8c8c99';ctx.fillRect(hx+hw*0.5-C*0.04,hy+hh,C*0.08,C*0.42);
+  ctx.fillStyle='#6f6f7a';ctx.beginPath();ctx.ellipse(hx+hw*0.5,gy+C*0.9,C*0.14,C*0.05,0,0,7);ctx.fill();
+  // housing
+  ctx.fillStyle='#3b3550';rr(hx,hy,hw,hh,hh*0.45);ctx.fill();ctx.strokeStyle='#ff9cc2';ctx.lineWidth=Math.max(1.5,C*0.03);ctx.stroke();
+  var cols={red:'#ff2f6d',yellow:'#ffd23f',green:'#3ddc84'};
+  ['red','yellow','green'].forEach(function(k,i){var cx=hx+hw*(0.18+i*0.32),cy=hy+hh*0.53,on=l.state===k;
+    ctx.save();if(on){ctx.shadowColor=cols[k];ctx.shadowBlur=C*0.35;}
+    heartPath(cx,cy,C*(on?0.3:0.26));ctx.fillStyle=on?cols[k]:'rgba(255,255,255,.16)';ctx.fill();ctx.restore();
+    if(on){ctx.fillStyle='rgba(255,255,255,.6)';ctx.beginPath();ctx.arc(cx-C*0.05,cy-C*0.05,C*0.03,0,7);ctx.fill();}});
+  // kid hint bubble on the crosswalk column
+  var bx=x0+(cw+0.5)*C,by=gy+C*0.28,go=l.state==='red',fs=Math.round(C*0.22);
+  ctx.font='900 '+fs+'px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
+  var txt=go?'可以過！':(l.state==='yellow'?'快變紅燈':'等一下'),tw=ctx.measureText(txt).width+fs;
+  ctx.globalAlpha=go?0.95:0.8;ctx.fillStyle=go?'#2fbf71':(l.state==='yellow'?'#f0a500':'#ff5c8a');rr(bx-tw/2,by-fs*0.75,tw,fs*1.5,fs*0.75);ctx.fill();
+  ctx.fillStyle='#fff';ctx.fillText(txt,bx,by+1);ctx.globalAlpha=1;
+}
 // ---------- drawing: road ----------
 function rowY(r){return view.oy+(rows.length-1-r)*view.cell;}
 function drawWorld(){
@@ -326,6 +388,9 @@ function drawWorld(){
         for(var d=0;d<COLS;d++)ctx.fillRect(x0+d*C+C*0.2,y-C*0.03,C*0.6,C*0.06);}
       if(!(rows[r+1]&&rows[r+1].type==='road')){ctx.fillStyle='#9aa0ad';ctx.fillRect(x0,y,W,C*0.06);}
       if(!(rows[r-1]&&rows[r-1].type==='road')){ctx.fillStyle='#9aa0ad';ctx.fillRect(x0,y+C*0.94,W,C*0.06);}
+      if(row.cw!==undefined){ctx.fillStyle='rgba(255,255,255,.92)';
+        for(var zb=0;zb<4;zb++)ctx.fillRect(x0+row.cw*C+C*0.08,y+zb*C*0.25+C*0.05,C*0.84,C*0.14);
+        ctx.fillStyle='rgba(255,255,255,.75)';var sl=row.dir>0?row.cw*C-C*0.1:(row.cw+1)*C+C*0.04;ctx.fillRect(x0+sl,y+C*0.06,C*0.06,C*0.88);}
     }else if(row.type==='goal'){
       ctx.fillStyle='#ffd6e7';ctx.fillRect(x0,y,W,C);
       for(var g=0;g<COLS;g++){ctx.fillStyle=g%2?'#ffc2da':'#ffe3ef';ctx.fillRect(x0+g*C,y,C,C);}
@@ -348,6 +413,7 @@ function drawWorld(){
   for(var r2=0;r2<rows.length;r2++){var rw=rows[r2];if(rw.type!=='road')continue;
     rw.cars.forEach(function(c){drawCar(view.ox+c.x*C,rowY(r2),c.len*C,C,c.color,rw.dir,c.truck);});}
   ctx.restore();
+  lights.forEach(drawLight);
   // player
   if(player){var p=curPos(),hop=player.t<1?Math.sin(player.t*Math.PI)*C*0.35:0;
     var px=view.ox+(p.c+0.5)*C,py=view.oy+(rows.length-1-p.r)*C+C*0.55;
@@ -790,7 +856,7 @@ makeOptions();makeFurnPalette();buildLevel();updateHud();
 if(location.hash==='#build'){enterBuild();}
 else if(location.hash==='#play'){startPlay();}
 requestAnimationFrame(frame);
-window.__game={move:move,get mode(){return mode;},save:save,startPlay:startPlay,enterHouse:enterHouse,enterBuild:enterBuild,roomRect:function(){layoutRoom();return {x:room.x,y:room.y,w:room.w,h:room.h};},itemRect:function(it){layoutRoom();return itemRect(it);},trashPos:function(){layoutRoom();return trashPos();},get curHouse(){return curHouse;},townRect:function(){layoutTown();return {x:town.x,y:town.y,cw:town.cw,ch:town.ch};}};
+window.__game={get lights(){return lights;},get rows(){return rows;},get player(){return player;},move:move,get mode(){return mode;},save:save,startPlay:startPlay,enterHouse:enterHouse,enterBuild:enterBuild,roomRect:function(){layoutRoom();return {x:room.x,y:room.y,w:room.w,h:room.h};},itemRect:function(it){layoutRoom();return itemRect(it);},trashPos:function(){layoutRoom();return trashPos();},get curHouse(){return curHouse;},townRect:function(){layoutTown();return {x:town.x,y:town.y,cw:town.cw,ch:town.ch};}};
 })();
 </script>
 </body>
