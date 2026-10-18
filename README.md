@@ -14,4 +14,7 @@ Single-file HTML5 canvas game (`index.html`) built for iPad/Safari touch and des
 ## 新功能：花園和池塘 🌷🦆
 小鎮裡除了房子，還可以蓋花園（玫瑰花園、向日葵、愛心花圃、蔬果園、蘋果樹）和池塘（小池塘、愛心池塘、噴水池）。每過一次馬路就得到 1 個建造機會 🎟️，蓋什麼都用 1 個。點花園會開花、點池塘鴨子會呱呱叫！用「🔨 拆除」可以拆掉（會退回建造機會）。
 
+## 新功能：遊戲區 🛝
+可以蓋溜滑梯、盪鞦韆、蹺蹺板、攀爬架、沙坑、籃球場、游泳池！點一下會動：愛心溜下來、鞦韆盪更高、蹺蹺板翹起來、爬到最上面、蓋沙堡、投籃進球、跳進泳池。
+
 Play: https://designowpro-debug.github.io/heart-crossing-game/
