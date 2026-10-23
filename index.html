@@ -96,7 +96,12 @@ body.building #pad,body.inroom #pad{display:none;}
 .shareCard .row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:8px;}
 .shareCard .big{margin:0;text-decoration:none;font-size:clamp(17px,2.8vmin,24px);padding:12px 22px;}
 #winShareBtn{background:linear-gradient(#ffe066,#ffb02e);box-shadow:0 6px 0 #d98a00;color:#6a3d00;animation:pop .4s ease-out;}
-#hud button.lang{width:auto;min-width:3.4em;padding:0 12px;font-size:1em;}
+.big.free{background:linear-gradient(#7fe0a0,#2fbf71);box-shadow:0 6px 0 #1f8f52;}
+.big.free:active{box-shadow:0 2px 0 #1f8f52;}
+.card .freeNote{font-size:clamp(13px,2vmin,16px);color:#a0557a;margin:.6em 0 0;}
+body.free #hLevel,body.free #hScore,body.free #goBtn,body.free #winShareBtn{display:none !important;}
+#menuBtn{min-height:44px;}
+#hud button.lang{width:auto;min-width:3.4em;padding:0 12px;font-size:1em;min-height:44px;}
 .cardFoot{margin-top:14px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
 .pill{min-height:44px;padding:8px 18px;border-radius:999px;background:#fff0f6;border:3px solid #ffd0e1;color:#ff4f8b;font-weight:900;
   font-size:clamp(15px,2.3vmin,19px);text-decoration:none;display:inline-flex;align-items:center;font-family:inherit;}
@@ -142,7 +147,9 @@ body.building #pad,body.inroom #pad{display:none;}
           <p data-i18n="how2"></p>
           <p data-i18n="how3"></p>
           <button class="big" id="startBtn" data-i18n="start">Play</button>
+          <button class="big free" id="freeBtn" data-i18n="free">🏡 Free Build</button>
           <button class="big alt" id="townBtn" data-i18n="town">My Town</button>
+          <p class="freeNote" data-i18n="freeNote"></p>
           <div class="cardFoot">
             <button class="pill" id="langBtn2">🌐 中文</button>
             <a class="pill" id="starLink" href="https://github.com/designowpro-debug/heart-crossing-game" target="_blank" rel="noopener" data-i18n="star">⭐ Star on GitHub</a>
@@ -190,6 +197,7 @@ body.building #pad,body.inroom #pad{display:none;}
         <button class="big hidden" id="winShareBtn">🎉 Share</button>
         <button class="big" id="goBtn">🚗 Cross!</button>
         <button class="big alt" id="shareBtn" data-i18n="shareTown">📸 Share my town</button>
+        <button class="pill" id="menuBtn" data-i18n="menu">🏠 Menu</button>
         <button id="clearBtn" data-i18n="clearTown">Clear town</button>
       </div>
     </div>
@@ -244,7 +252,12 @@ en:{docTitle:'Heart Crossing – cute road-crossing & town-building game',hudTit
  shareEmpty:'Cross the road to start building!',docTitleShort:'Heart Crossing',
  shareText:'I built my own Heart Town with {n} buildings and reached Level {l}! 💗 Come play Heart Crossing:',
  shareText1:'I started my own Heart Town and reached Level {l}! 💗 Come play Heart Crossing:',
- shareTextLevel:'I cleared Level {n} in Heart Crossing! 💗 Can you beat it?'},
+ shareTextLevel:'I cleared Level {n} in Heart Crossing! 💗 Can you beat it?',
+ free:'🏡 Free Build',menu:'🏠 Menu',freeNote:'🏡 Free Build = no cars, no levels — build as much as you like!',
+ bmFree:'🏡 Free Build: tap an empty spot to build: {k} — as many as you like! Tap a house to go inside 🛋️',
+ cfHouseF:'Remove this house? The furniture inside will be gone too!',cfOtherF:'Remove the {n}?',removedF:'Removed! Build something new here 🏗️',rmModeF:'Tap something to remove it',
+ shareFree:'My Heart Town: {n} buildings',shareFree1:'My Heart Town: 1 building',
+ shareTextFree:'I built my own Heart Town with {n} buildings! 💗 Build yours in Heart Crossing:',shareTextFree1:'I started building my own Heart Town! 💗 Build yours in Heart Crossing:'},
 zh:{docTitle:'愛心過馬路',hudTitle:'💗 愛心過馬路',sound:'聲音',lang:'語言',
  cardTitle:'💗 愛心過馬路 💗',intro:'幫小愛心穿過好多車子的馬路！',
  how1:'👆 用<b>大箭頭按鈕</b>，或在畫面上<b>滑一下</b>來移動<br>（點一下畫面 = 往前跳）',
@@ -282,7 +295,12 @@ zh:{docTitle:'愛心過馬路',hudTitle:'💗 愛心過馬路',sound:'聲音',la
  shareEmpty:'快去過馬路，開始蓋小鎮吧！',docTitleShort:'愛心過馬路',
  shareText:'我在「愛心過馬路」蓋了 {n} 個建築，已經到第 {l} 關了！💗 一起來玩：',
  shareText1:'我在「愛心過馬路」開始蓋小鎮，已經到第 {l} 關了！💗 一起來玩：',
- shareTextLevel:'我在「愛心過馬路」過了第 {n} 關！💗 你也來挑戰：'}
+ shareTextLevel:'我在「愛心過馬路」過了第 {n} 關！💗 你也來挑戰：',
+ free:'🏡 自由蓋小鎮',menu:'🏠 選單',freeNote:'🏡 自由蓋小鎮＝沒有車子、沒有關卡，想蓋多少就蓋多少！',
+ bmFree:'🏡 自由蓋小鎮：點空地蓋{k}，想蓋幾個都可以！點房子進去佈置 🛋️',
+ cfHouseF:'要拆掉這棟房子嗎？裡面的家具也會不見喔！',cfOtherF:'要拆掉「{n}」嗎？',removedF:'拆掉了！可以在這裡蓋新的東西 🏗️',rmModeF:'點一下要拆掉的東西',
+ shareFree:'我的愛心小鎮：{n} 個建築',shareFree1:'我的愛心小鎮：1 個建築',
+ shareTextFree:'我在「愛心過馬路」蓋了 {n} 個建築的愛心小鎮！💗 你也來蓋：',shareTextFree1:'我在「愛心過馬路」開始蓋愛心小鎮了！💗 你也來蓋：'}
 };
 var LANG=(function(){var q=(location.search.match(/[?&]lang=([a-zA-Z-]+)/)||[])[1];
   if(q){q=/^zh/i.test(q)?'zh':'en';try{localStorage.setItem('heartLang',q);}catch(e){}return q;}
@@ -298,16 +316,20 @@ var stage=document.getElementById('stage');
 var $=function(id){return document.getElementById(id);};
 
 // ---------- save ----------
-var save={houses:[],tickets:0,level:1,score:0,muted:false,style:0,color:0,kind:'house',gstyle:0,pstyle:0,ystyle:0,v:4};
-try{var s=JSON.parse(localStorage.getItem(SAVE_KEY)||'null'); if(s&&typeof s==='object'){for(var k in save){if(k in s)save[k]=s[k];}}}catch(e){}
-// migrate v1 -> v2: every house gets an id and its own interior (items)
-if(!Array.isArray(save.houses))save.houses=[];
-save.houses=save.houses.filter(function(h){return h&&typeof h==='object'&&isFinite(h.c)&&isFinite(h.r);});
-save.houses.forEach(function(h,i){if(!h.id)h.id='h'+Date.now().toString(36)+i;if(['garden','pond','play'].indexOf(h.kind)<0)h.kind='house';
-  if(!Array.isArray(h.items))h.items=[];
-  h.items=h.items.filter(function(it){return it&&typeof it.t==='string'&&isFinite(it.x)&&isFinite(it.y);});});
-if(['house','garden','pond','play'].indexOf(save.kind)<0)save.kind='house';save.v=4;
-function persist(){try{localStorage.setItem(SAVE_KEY,JSON.stringify(save,function(k,v){return (k==='pop'||k==='fxT')?undefined:v;}));}catch(e){}}
+var FREE_KEY='heartTownFree_v1',FREE=false;
+function loadSave(key){
+  var o={houses:[],tickets:0,level:1,score:0,muted:false,style:0,color:0,kind:'house',gstyle:0,pstyle:0,ystyle:0,v:4};
+  try{var s=JSON.parse(localStorage.getItem(key)||'null'); if(s&&typeof s==='object'){for(var k in o){if(k in s)o[k]=s[k];}}}catch(e){}
+  // migrate older saves: every house gets an id and its own interior (items)
+  if(!Array.isArray(o.houses))o.houses=[];
+  o.houses=o.houses.filter(function(h){return h&&typeof h==='object'&&isFinite(h.c)&&isFinite(h.r);});
+  o.houses.forEach(function(h,i){if(!h.id)h.id='h'+Date.now().toString(36)+i;if(['garden','pond','play'].indexOf(h.kind)<0)h.kind='house';
+    if(!Array.isArray(h.items))h.items=[];
+    h.items=h.items.filter(function(it){return it&&typeof it.t==='string'&&isFinite(it.x)&&isFinite(it.y);});});
+  if(['house','garden','pond','play'].indexOf(o.kind)<0)o.kind='house';o.v=4;return o;
+}
+var saveC=loadSave(SAVE_KEY),saveF=loadSave(FREE_KEY),save=saveC;
+function persist(){try{localStorage.setItem(FREE?FREE_KEY:SAVE_KEY,JSON.stringify(save,function(k,v){return (k==='pop'||k==='fxT')?undefined:v;}));}catch(e){}}
 
 // ---------- audio ----------
 var actx=null;
@@ -399,7 +421,7 @@ function buildLevel(){
 }
 
 var hintTimer=null;function showHint(){var h=$('hint');h.classList.remove('hidden');h.style.opacity='1';clearTimeout(hintTimer);hintTimer=setTimeout(function(){h.style.opacity='0';setTimeout(function(){h.classList.add('hidden');},500);},4500);}
-function startPlay(){unlockAudio();$('winShareBtn').classList.add('hidden');setTimeout(showHint,0);hideAll();document.body.classList.remove('building','inroom');buildLevel();mode='play';updateHud();}
+function startPlay(){unlockAudio();if(FREE)setFreeMode(false);$('winShareBtn').classList.add('hidden');setTimeout(showHint,0);hideAll();document.body.classList.remove('building','inroom');buildLevel();mode='play';updateHud();}
 function hideAll(){['titleScreen','crashScreen','buildBar','roomBar','hint','shareModal'].forEach(function(id){$(id).classList.add('hidden');});}
 
 function move(dir){
@@ -438,7 +460,7 @@ function enterBuild(msg){
 }
 function buildMsg(msg){
   var m=msg||'';
-  if(!m){var kn=(KINDS.filter(function(x){return x.k===save.kind;})[0]||KINDS[0]).n;m=save.tickets>0?T('bmHave',{n:save.tickets,k:kn}):(save.houses.length?T('bmHouses'):T('bmNone'));}
+  if(!m){var kn=(KINDS.filter(function(x){return x.k===save.kind;})[0]||KINDS[0]).n;m=FREE?T('bmFree',{k:kn}):save.tickets>0?T('bmHave',{n:save.tickets,k:kn}):(save.houses.length?T('bmHouses'):T('bmNone'));}
   $('buildMsg').textContent=m;
 }
 function updateGoBtn(){$('goBtn').textContent=T('go',{n:save.level});}
@@ -446,7 +468,7 @@ function updateGoBtn(){$('goBtn').textContent=T('go',{n:save.level});}
 function updateHud(){
   $('hLevel').textContent=T('level',{n:save.level});
   $('hScore').textContent='⭐ '+(save.score+(mode==='play'?0:0));
-  $('hHouses').textContent='🏘️ '+save.houses.length+' 🎟️ '+save.tickets;
+  $('hHouses').textContent=FREE?('🏘️ '+save.houses.length):('🏘️ '+save.houses.length+' 🎟️ '+save.tickets);
   $('muteBtn').textContent=save.muted?'🔇':'🔊';
 }
 
@@ -683,6 +705,13 @@ function drawHouse(cx,base,s,style,color,pop){
 var town={x:0,y:0,cw:0,ch:0};
 var townAnim=save.houses;
 save.houses.forEach(function(h){h.pop=1;});
+function setFreeMode(f){
+  f=!!f;var old=save;FREE=f;save=f?saveF:saveC;save.muted=old.muted;
+  TOWN_C=f?10:8;TOWN_R=f?6:5;townAnim=save.houses;save.houses.forEach(function(h){if(!(h.pop<1))h.pop=1;});
+  document.body.classList.toggle('free',f);curHouse=null;townRemove=false;
+  if(typeof makeOptions==='function')makeOptions();updateHud();
+}
+function goTitle(){unlockAudio();mode='title';hideAll();document.body.classList.remove('building','inroom');if(FREE)setFreeMode(false);buildLevel();updateHud();$('titleScreen').classList.remove('hidden');}
 function layoutTown(){
   var barH=$('buildBar').offsetHeight||0, availH=view.h-barH-10, top=view.h*0.0;
   var cw=Math.min((view.w-20)/TOWN_C,(availH*0.82)/TOWN_R);
@@ -709,7 +738,7 @@ function drawTownPlots(){
   for(var r=0;r<TOWN_R;r++)for(var c=0;c<TOWN_C;c++){
     var x=town.x+c*town.cw,y=town.y+r*town.ch;
     ctx.fillStyle=(c+r)%2?'#8fd46a':'#97d972';ctx.fillRect(x,y,town.cw,town.ch);
-    if(!SHARE&&!occ[c+','+r]&&save.tickets>0){ctx.strokeStyle='rgba(255,255,255,'+(0.5+0.3*Math.sin(time*4))+')';ctx.lineWidth=2;ctx.setLineDash([6,5]);
+    if(!SHARE&&!occ[c+','+r]&&(FREE||save.tickets>0)){ctx.strokeStyle='rgba(255,255,255,'+(0.5+0.3*Math.sin(time*4))+')';ctx.lineWidth=2;ctx.setLineDash([6,5]);
       rr(x+town.cw*0.12,y+town.ch*0.12,town.cw*0.76,town.ch*0.76,8);ctx.stroke();ctx.setLineDash([]);}
   }
   var list=save.houses.slice().sort(function(a,b){return a.r-b.r;});
@@ -730,11 +759,11 @@ function tapTown(px,py){
   var hit=null;save.houses.forEach(function(h){if(h.c===c&&h.r===r)hit=h;});
   if(townRemove){if(hit)removeAt(hit);else{sfx.no();buildMsg(T('rmHint'));}return;}
   if(hit){if(kindOf(hit)==='house')enterHouse(hit);else tapFx(hit);return;}
-  if(save.tickets<=0){sfx.no();buildMsg(T('noBuilds'));return;}
+  if(!FREE&&save.tickets<=0){sfx.no();buildMsg(T('noBuilds'));return;}
   var K=save.kind,h={id:'h'+Date.now().toString(36)+Math.floor(Math.random()*1e4),kind:K,c:c,r:r,style:K==='garden'?save.gstyle:K==='pond'?save.pstyle:K==='play'?save.ystyle:save.style,color:save.color,items:[],pop:0};
-  save.houses.push(h);save.tickets--;persist();if(K==='garden')sfx.bloom();else if(K==='pond')sfx.splash();else if(K==='play')sfx.boing();else sfx.place();
+  save.houses.push(h);if(!FREE)save.tickets--;persist();if(K==='garden')sfx.bloom();else if(K==='pond')sfx.splash();else if(K==='play')sfx.boing();else sfx.place();
   for(var i=0;i<14;i++){var a=Math.random()*Math.PI*2;particles.push({x:c+0.5,y:TOWN_R-r-0.4,vx:Math.cos(a)*3,vy:Math.sin(a)*3,life:1,max:0.7,color:pick(['#ffe14d','#fff','#ff9cc2']),type:'star',s:0.12,g:0});}
-  if(save.houses.length>=TOWN_C*TOWN_R)buildMsg(T('full'));else buildMsg((K==='house'?T('builtHouse'):T('builtOther',{n:kindName(h)}))+(save.tickets>0?T('left',{n:save.tickets}):''));
+  if(save.houses.length>=TOWN_C*TOWN_R)buildMsg(T('full'));else buildMsg((K==='house'?T('builtHouse'):T('builtOther',{n:kindName(h)}))+(!FREE&&save.tickets>0?T('left',{n:save.tickets}):''));
   updateHud();
 }
 
@@ -744,7 +773,7 @@ function makeOptions(){
   KINDS.forEach(function(K){var b=document.createElement('button');b.className='kind'+(!townRemove&&save.kind===K.k?' sel':'');b.setAttribute('data-k',K.k);b.textContent=K.e+' '+K.n;
     b.addEventListener('click',function(){save.kind=K.k;townRemove=false;persist();sfx.click();makeOptions();buildMsg();});kg.appendChild(b);});
   var rb=document.createElement('button');rb.id='removeBtn';rb.className='kind rm'+(townRemove?' sel':'');rb.textContent=townRemove?T('rmBtnOn'):T('rmBtn');
-  rb.addEventListener('click',function(){townRemove=!townRemove;sfx.click();makeOptions();buildMsg(townRemove?T('rmMode'):'');});kg.appendChild(rb);
+  rb.addEventListener('click',function(){townRemove=!townRemove;sfx.click();makeOptions();buildMsg(townRemove?T(FREE?'rmModeF':'rmMode'):'');});kg.appendChild(rb);
   sg.style.display=cg.style.display=townRemove?'none':'';
   var list=save.kind==='garden'?GARDENS:save.kind==='pond'?PONDS:save.kind==='play'?PLAYS:STYLES,key=save.kind==='garden'?'gstyle':save.kind==='pond'?'pstyle':save.kind==='play'?'ystyle':'style';
   list.forEach(function(st,i){var b=document.createElement('button');b.className='opt'+(save[key]===i?' sel':'');b.textContent=st.e+' '+st.n;
@@ -959,11 +988,11 @@ function playFx(h){
 }
 
 function removeAt(h){
-  var nm=kindName(h),msg=kindOf(h)==='house'?T('cfHouse'):T('cfOther',{n:nm});
+  var nm=kindName(h),msg=kindOf(h)==='house'?T(FREE?'cfHouseF':'cfHouse'):T(FREE?'cfOtherF':'cfOther',{n:nm});
   if(!confirm(msg))return;
-  var i=save.houses.indexOf(h);if(i>=0)save.houses.splice(i,1);save.tickets++;persist();tone(400,0.15,'square',0.06,150);
+  var i=save.houses.indexOf(h);if(i>=0)save.houses.splice(i,1);if(!FREE)save.tickets++;persist();tone(400,0.15,'square',0.06,150);
   for(var p=0;p<12;p++){var a=Math.random()*Math.PI*2;particles.push({x:h.c+0.5,y:TOWN_R-h.r-0.5,vx:Math.cos(a)*2.5,vy:Math.sin(a)*2.5,life:1,max:0.6,color:pick(['#ccc','#fff','#e0c9a6']),type:'dot',s:0.1,g:0});}
-  buildMsg(T('removed',{n:save.tickets}));updateHud();
+  buildMsg(FREE?T('removedF'):T('removed',{n:save.tickets}));updateHud();
 }
 
 // ---------- house interiors ----------
@@ -1226,7 +1255,9 @@ document.addEventListener('touchstart',unlockAudio,{passive:true});
 $('startBtn').addEventListener('click',function(){unlockAudio();sfx.click();startPlay();});
 $('retryBtn').addEventListener('click',function(){unlockAudio();sfx.click();startPlay();});
 $('goBtn').addEventListener('click',function(){unlockAudio();sfx.click();startPlay();});
-$('townBtn').addEventListener('click',function(){unlockAudio();sfx.click();enterBuild();});
+$('townBtn').addEventListener('click',function(){unlockAudio();sfx.click();if(FREE)setFreeMode(false);enterBuild();});
+$('freeBtn').addEventListener('click',function(){unlockAudio();sfx.click();setFreeMode(true);enterBuild();});
+$('menuBtn').addEventListener('click',function(){sfx.click();goTitle();});
 $('muteBtn').addEventListener('click',function(){unlockAudio();save.muted=!save.muted;persist();updateHud();sfx.click();});
 $('clearBtn').addEventListener('click',function(){if(confirm(T('cfTown'))){save.houses.length=0;persist();buildMsg(T('townCleared'));updateHud();}});
 
@@ -1238,7 +1269,8 @@ function frame(now){var dt=Math.min(0.05,(now-last)/1000);last=now;
   requestAnimationFrame(frame);}
 // ---------- share my town ----------
 var GAME_URL='https://designowpro-debug.github.io/heart-crossing-game/',SHARE=false,lastShare=null,winLevel=0;
-function shareStatsText(){var n=save.houses.length;return T(n===1?'shareStats1':'shareStats',{n:n,l:save.level});}
+function shareURL(){return FREE?GAME_URL+'?mode=free':GAME_URL;}
+function shareStatsText(){var n=save.houses.length;return FREE?T(n===1?'shareFree1':'shareFree',{n:n}):T(n===1?'shareStats1':'shareStats',{n:n,l:save.level});}
 function renderShare(levelN){
   var S=1080,c=document.createElement('canvas');c.width=c.height=S;var g=c.getContext('2d');
   var oc=ctx,ot=town,os=SHARE;ctx=g;SHARE=true;
@@ -1264,7 +1296,7 @@ function renderShare(levelN){
     if(!save.houses.length){g.fillStyle='rgba(90,35,64,.6)';g.font='900 40px sans-serif';g.fillText(T('shareEmpty'),540,gy+gh/2);}
     g.restore();
     g.font='800 44px sans-serif';g.fillStyle='#5a2340';g.fillText(levelN?T(save.houses.length===1?'shareBuild1':'shareBuild',{n:save.houses.length}):shareStatsText(),540,gy+gh+16+50);
-    g.font='800 28px sans-serif';g.fillStyle='#ff4f8b';g.fillText('▶ '+GAME_URL.replace(/^https:\/\//,'').replace(/\/$/,''),540,1000);
+    g.font='800 '+(FREE?25:28)+'px sans-serif';g.fillStyle='#ff4f8b';g.fillText('▶ '+shareURL().replace(/^https:\/\//,'').replace(/\/$/,''),540,1000);
   }finally{ctx=oc;town=ot;SHARE=os;}
   return c;
 }
@@ -1272,15 +1304,15 @@ function dataURLFile(u,name){var b=atob(u.split(',')[1]),n=b.length,a=new Uint8A
   try{return new File([a],name,{type:'image/png'});}catch(e){var bl=new Blob([a],{type:'image/png'});bl.name=name;return bl;}}
 function prepShare(levelN){
   var u=renderShare(levelN).toDataURL('image/png');
-  var text=levelN?T('shareTextLevel',{n:levelN}):T(save.houses.length===1?'shareText1':'shareText',{n:save.houses.length,l:save.level});
+  var n=save.houses.length,text=levelN?T('shareTextLevel',{n:levelN}):FREE?T(n===1?'shareTextFree1':'shareTextFree',{n:n}):T(n===1?'shareText1':'shareText',{n:n,l:save.level});
   lastShare={url:u,text:text,file:dataURLFile(u,levelN?'heart-crossing-level-'+levelN+'.png':'my-heart-town.png')};return lastShare;
 }
 // must run synchronously inside the tap handler (iOS needs the user gesture)
 function shareNow(sh){
   try{
     if(navigator.share&&navigator.canShare&&navigator.canShare({files:[sh.file]})){
-      navigator.share({files:[sh.file],title:T('docTitleShort'),text:sh.text+' '+GAME_URL}).catch(function(e){if(!e||e.name!=='AbortError')showShareModal(sh);});return 'files';}
-    if(navigator.share){navigator.share({title:T('docTitleShort'),text:sh.text,url:GAME_URL}).catch(function(e){if(!e||e.name!=='AbortError')showShareModal(sh);});return 'text';}
+      navigator.share({files:[sh.file],title:T('docTitleShort'),text:sh.text+' '+shareURL()}).catch(function(e){if(!e||e.name!=='AbortError')showShareModal(sh);});return 'files';}
+    if(navigator.share){navigator.share({title:T('docTitleShort'),text:sh.text,url:shareURL()}).catch(function(e){if(!e||e.name!=='AbortError')showShareModal(sh);});return 'text';}
   }catch(e){}
   showShareModal(sh);return 'modal';
 }
@@ -1292,9 +1324,9 @@ function showShareModal(sh){
 }
 function copyLink(){
   var done=function(){$('copyLinkBtn').textContent=T('copied');tone(880,0.1,'triangle',0.08);setTimeout(function(){$('copyLinkBtn').textContent=T('copyLink');},2000);};
-  var fallback=function(){var t=document.createElement('textarea');t.value=GAME_URL;t.setAttribute('readonly','');t.style.position='fixed';t.style.opacity='0';document.body.appendChild(t);
-    t.select();t.setSelectionRange(0,99999);var ok=false;try{ok=document.execCommand('copy');}catch(e){}document.body.removeChild(t);if(ok)done();else window.prompt(T('copyPrompt'),GAME_URL);};
-  try{if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(GAME_URL).then(done,fallback);return;}}catch(e){}
+  var fallback=function(){var t=document.createElement('textarea');t.value=shareURL();t.setAttribute('readonly','');t.style.position='fixed';t.style.opacity='0';document.body.appendChild(t);
+    t.select();t.setSelectionRange(0,99999);var ok=false;try{ok=document.execCommand('copy');}catch(e){}document.body.removeChild(t);if(ok)done();else window.prompt(T('copyPrompt'),shareURL());};
+  try{if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(shareURL()).then(done,fallback);return;}}catch(e){}
   fallback();
 }
 $('shareBtn').addEventListener('click',function(){doShare(0);});
@@ -1319,10 +1351,11 @@ $('langBtn').addEventListener('click',toggleLang);$('langBtn2').addEventListener
 
 makeOptions();makeFurnPalette();buildLevel();updateHud();applyLang();
 // test hooks via URL hash (e.g. #build)
-if(location.hash==='#build'){enterBuild();}
+if(/[?&]mode=free(&|$)/.test(location.search)){setFreeMode(true);enterBuild();}
+else if(location.hash==='#build'){enterBuild();}
 else if(location.hash==='#play'){startPlay();}
 requestAnimationFrame(frame);
-window.__game={shareStatsText:shareStatsText,prepShare:prepShare,setLang:setLang,get lang(){return LANG;},get lights(){return lights;},get rows(){return rows;},get player(){return player;},move:move,get mode(){return mode;},save:save,startPlay:startPlay,enterHouse:enterHouse,enterBuild:enterBuild,roomRect:function(){layoutRoom();return {x:room.x,y:room.y,w:room.w,h:room.h};},itemRect:function(it){layoutRoom();return itemRect(it);},trashPos:function(){layoutRoom();return trashPos();},get curHouse(){return curHouse;},townRect:function(){layoutTown();return {x:town.x,y:town.y,cw:town.cw,ch:town.ch};}};
+window.__game={shareStatsText:shareStatsText,prepShare:prepShare,setLang:setLang,get lang(){return LANG;},get lights(){return lights;},get rows(){return rows;},get player(){return player;},move:move,get mode(){return mode;},get save(){return save;},get free(){return FREE;},get saveC(){return saveC;},get saveF(){return saveF;},setFreeMode:setFreeMode,goTitle:goTitle,startPlay:startPlay,enterHouse:enterHouse,enterBuild:enterBuild,roomRect:function(){layoutRoom();return {x:room.x,y:room.y,w:room.w,h:room.h};},itemRect:function(it){layoutRoom();return itemRect(it);},trashPos:function(){layoutRoom();return trashPos();},get curHouse(){return curHouse;},townRect:function(){layoutTown();return {x:town.x,y:town.y,cw:town.cw,ch:town.ch};}};
 })();
 </script>
 </body>
