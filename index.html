@@ -138,8 +138,16 @@ body.dressing #pad,body.petting #pad{display:none;}
 .care:disabled{opacity:.45;}
 .petRow{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;align-items:center;}
 #petBack{margin:0;padding:10px 22px;font-size:1.05em;min-height:48px;}
-#adoptCard{z-index:12;background:rgba(200,235,255,.3);}
-.adoptCard{max-width:min(94%,560px);padding:16px 18px;}
+#adoptCard{z-index:12;background:rgba(40,90,130,.32);}
+.adoptCard{max-width:min(96%,580px);max-height:calc(100% - 12px);overflow:auto;padding:12px 16px;display:flex;flex-direction:column;align-items:center;gap:6px;box-sizing:border-box;}
+.adoptCard h2{margin:.1em 0;}.adoptCard p{margin:.2em 0;}
+.adoptPrevBox{flex:none;border-radius:22px;background:linear-gradient(#bfe9ff,#eaf8ff 70%,#ffe9b8 70%);border:3px solid #cde9f7;overflow:hidden;}
+#adoptPrev{position:static;display:block;width:min(240px,62vw);height:clamp(110px,24vh,210px);}
+@media (orientation:landscape){.adoptCard{flex-direction:row;max-width:min(97%,860px);gap:14px;align-items:center;}
+  #adoptPrev{width:clamp(170px,26vw,280px);height:clamp(190px,calc(100vh - 170px),330px);}}
+@media (orientation:landscape) and (max-height:500px){#axoColors .axc{width:66px;height:78px;}#axoColors .axc img{width:50px;height:50px;}}
+@media (orientation:portrait) and (max-width:430px){#axoColors .axc{width:60px;height:76px;border-radius:14px;font-size:11px;}#axoColors .axc img{width:48px;height:48px;}}
+body.adopting #petBar{opacity:.35;pointer-events:none;filter:saturate(.6);}
 #axoColors .axc{width:84px;height:96px;border-radius:18px;background:#f0faff;border:3px solid #cde9f7;padding:2px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:900;font-size:12px;color:#245a80;}
 #axoColors .axc img{width:66px;height:66px;pointer-events:none;}#axoColors .axc span{pointer-events:none;}
 #axoColors .axc.sel{border-color:#ff4f8b;background:#ffe0ec;}
@@ -255,11 +263,14 @@ body.dressing #pad,body.petting #pad{display:none;}
       </div>
       <div class="overlay hidden" id="adoptCard">
         <div class="card adoptCard">
+          <div class="adoptPrevBox"><canvas id="adoptPrev" aria-hidden="true"></canvas></div>
+          <div class="adoptForm">
           <h2 id="adoptTitle">Adopt an axolotl!</h2>
           <p data-i18n="adoptSub"></p>
           <div class="grp" id="axoColors"></div>
           <label class="nameRow"><span data-i18n="petNameLabel">Name</span><input id="petName" maxlength="12" autocomplete="off" autocorrect="off" spellcheck="false"></label>
           <button class="big" id="adoptBtn">💖 Adopt</button>
+          </div>
         </div>
       </div>
       <div id="buildBar" class="hidden">
@@ -521,7 +532,7 @@ function buildLevel(){
 
 var hintTimer=null;function showHint(){var h=$('hint');h.classList.remove('hidden');h.style.opacity='1';clearTimeout(hintTimer);hintTimer=setTimeout(function(){h.style.opacity='0';setTimeout(function(){h.classList.add('hidden');},500);},4500);}
 function startPlay(){unlockAudio();if(FREE)setFreeMode(false);$('winShareBtn').classList.add('hidden');setTimeout(showHint,0);hideAll();document.body.classList.remove('building','inroom');buildLevel();mode='play';updateHud();}
-function hideAll(){['titleScreen','crashScreen','buildBar','roomBar','hint','shareModal','dressBar','petBar','adoptCard'].forEach(function(id){$(id).classList.add('hidden');});document.body.classList.remove('dressing','petting');charFx=[];}
+function hideAll(){['titleScreen','crashScreen','buildBar','roomBar','hint','shareModal','dressBar','petBar','adoptCard'].forEach(function(id){$(id).classList.add('hidden');});document.body.classList.remove('dressing','petting','adopting');charFx=[];}
 
 function move(dir){
   if(mode!=='play'||player.dead)return;
@@ -1805,12 +1816,21 @@ function openPet(from){unlockAudio();petReturn=from||'title';hideAll();mode='pet
   if(!gsave.pet.adopted)showAdopt(false);else petMsg(gsave.pet.full<40?T('petHungry',{n:petName()}):T('petHello',{n:petName()}));resize();}
 function closePet(){unlockAudio();sfx.click();persistGirl();if(petReturn==='build'){enterBuild(gsave.pet.adopted?T('petTown',{n:petName()}):undefined);}else goTitle();}
 function showAdopt(edit){adoptColor=edit?gsave.pet.color:0;$('adoptTitle').textContent=edit?T('editTitle'):T('adoptTitle');$('adoptBtn').textContent=edit?T('saveName'):T('adoptBtn');
-  var inp=$('petName');inp.value=edit?(gsave.pet.name||''):'';inp.placeholder=T('petDefault');renderAxoColors();$('adoptCard').classList.remove('hidden');$('adoptCard').setAttribute('data-edit',edit?'1':'');}
+  var inp=$('petName');inp.value=edit?(gsave.pet.name||''):'';inp.placeholder=T('petDefault');renderAxoColors();$('adoptCard').classList.remove('hidden');$('adoptCard').setAttribute('data-edit',edit?'1':'');document.body.classList.add('adopting');petAnim.wigT=time;}
+function adoptOpen(){return !$('adoptCard').classList.contains('hidden');}
+function adoptPrevName(){var v=($('petName').value||'').trim();return v||T('petDefault');}
+function drawAdoptPrev(){var c=$('adoptPrev');if(!c)return;var cw=c.clientWidth,chh=c.clientHeight;if(!cw||!chh)return;var dpr=Math.min(3,window.devicePixelRatio||1),W2=Math.round(cw*dpr),H2=Math.round(chh*dpr);
+  if(c.width!==W2||c.height!==H2){c.width=W2;c.height=H2;}var g=c.getContext('2d');g.setTransform(dpr,0,0,dpr,0,0);g.clearRect(0,0,cw,chh);
+  var fs=Math.round(Math.max(15,Math.min(26,cw*0.1))),nameH=fs*1.6,S=Math.min(cw*0.56,(chh-nameH)*0.92),base=chh*0.93,bo=petBounce();
+  g.fillStyle='rgba(255,255,255,.6)';for(var b=0;b<6;b++){var bx=((b*137)%100)/100*cw,by=chh-((time*22+b*53)%(chh+20));g.beginPath();g.arc(bx,by,2+b%3*2,0,7);g.fill();}
+  drawAxo(g,cw/2,base,S,adoptColor,{wig:petWig(),bounce:bo,squash:bo,happy:true});
+  g.textAlign='center';g.textBaseline='middle';g.font='900 '+fs+'px sans-serif';g.lineWidth=5;g.lineJoin='round';g.strokeStyle='#fff';g.fillStyle='#ff4f8b';var nm='💗 '+adoptPrevName()+' 💗';
+  var mw=g.measureText(nm).width;if(mw>cw-8){g.font='900 '+Math.floor(fs*(cw-8)/mw)+'px sans-serif';}g.strokeText(nm,cw/2,fs*0.95);g.fillText(nm,cw/2,fs*0.95);}
 function renderAxoColors(){var gq=$('axoColors');gq.innerHTML='';AXO.forEach(function(A,i){var b=document.createElement('button');b.className='axc'+(i===adoptColor?' sel':'');b.setAttribute('data-c',i);b.setAttribute('aria-label',A.n);
   var im=document.createElement('img');im.alt='';im.src=axoIcon(i,96);b.appendChild(im);var sp=document.createElement('span');sp.textContent=A.n;b.appendChild(sp);
-  b.addEventListener('click',function(){unlockAudio();adoptColor=i;squeak();petAnim.wigT=time;renderAxoColors();});gq.appendChild(b);});}
+  b.addEventListener('click',function(){unlockAudio();adoptColor=i;squeak();petAnim.wigT=time;petAnim.bounceT=time;renderAxoColors();});gq.appendChild(b);});}
 function adoptPet(name,color){var P=gsave.pet,wasAdopted=P.adopted;P.name=String(name||'').trim().slice(0,12);if(color>=0&&color<AXO.length)P.color=color|0;
-  if(!wasAdopted){P.adopted=true;P.happy=85;P.full=80;P.last=Date.now();}persistGirl();$('adoptCard').classList.add('hidden');updatePetUi();updatePetButtons();
+  if(!wasAdopted){P.adopted=true;P.happy=85;P.full=80;P.last=Date.now();}persistGirl();$('adoptCard').classList.add('hidden');document.body.classList.remove('adopting');updatePetUi();updatePetButtons();
   petAnim.wigT=time;petAnim.bounceT=time;squeak();layoutPet();fxBurst(pl.x,pl.base-pl.S*0.7,18,'heart',pl.S*1.2,['#ff4f8b','#ff9cc2','#ffd0e1'],pl.S*0.07);
   petMsg(wasAdopted?T('petHello',{n:petName()}):T('adopted',{n:petName()}));if(!wasAdopted){PW.x=GW.x-0.5;PW.y=GW.y;}}
 function updatePetUi(){var P=gsave.pet;$('happyBar').style.width=Math.round(P.happy)+'%';$('fullBar').style.width=Math.round(P.full)+'%';
@@ -1830,6 +1850,7 @@ function drawPetScreen(){layoutPet();var ah=pl.ah,w=view.w;var g=ctx.createLinea
     for(var k=1;k<=6;k++)ctx.lineTo(x+Math.sin(time*1.5+k+i)*pl.S*0.05,pl.base+pl.S*0.1-h*k/6);ctx.stroke();});
   ctx.fillStyle='rgba(255,255,255,.7)';for(var b=0;b<10;b++){var bx=((b*137)%100)/100*w,by=ah-((time*30+b*71)%(ah+40));ctx.beginPath();ctx.arc(bx+Math.sin(time*2+b)*6,by,3+b%4*2,0,7);ctx.fill();}
   var ci=gsave.pet.adopted?gsave.pet.color:adoptColor,bo=petBounce(),happy=time-petAnim.happyT<1.6;
+  var aOpen=adoptOpen();if(aOpen){drawAdoptPrev();drawCharFx();return;}
   drawAxo(ctx,pl.x,pl.base,pl.S,ci,{wig:petWig(),bounce:bo,squash:bo,happy:happy});
   ctx.textAlign='center';ctx.textBaseline='middle';ctx.font='900 '+Math.round(Math.max(18,pl.S*0.15))+'px sans-serif';ctx.fillStyle='#ff4f8b';ctx.strokeStyle='#fff';ctx.lineWidth=6;ctx.lineJoin='round';
   var nm=gsave.pet.adopted?'💗 '+petName()+' 💗':'💗 ? 💗';ctx.strokeText(nm,pl.x,Math.max(26,pl.base-pl.S*1.2));ctx.fillText(nm,pl.x,Math.max(26,pl.base-pl.S*1.2));
@@ -1949,7 +1970,7 @@ if(/[?&]mode=free(&|$)/.test(location.search)){setFreeMode(true);enterBuild();}
 else if(location.hash==='#build'){enterBuild();}
 else if(location.hash==='#play'){startPlay();}
 requestAnimationFrame(frame);
-window.__game={get gsave(){return gsave;},get outfit(){return outfit();},girlExists:girlExists,openDress:openDress,closeDress:closeDress,setPart:setPart,removePart:removePart,undoDress:undoDress,randomOutfit:randomOutfit,setSlot:setSlot,setDressColor:setDressColor,openPet:openPet,closePet:closePet,adoptPet:adoptPet,petCare:petCare,get GW(){return GW;},get PW(){return PW;},get RG(){return RG;},get RP(){return RP;},get dressCat(){return dressCat;},set dressCat(v){dressCat=v;renderDress();},petName:petName,dressLayout:function(){return layoutDress();},petLayout:function(){return layoutPet();},roomCharPos:function(w){layoutRoom();return roomCharPos(w==='pet'?RP:RG);},petTownPos:function(){layoutTown();return petTownPos();},shareStatsText:shareStatsText,prepShare:prepShare,setLang:setLang,get lang(){return LANG;},get lights(){return lights;},get rows(){return rows;},get player(){return player;},move:move,get mode(){return mode;},get save(){return save;},get free(){return FREE;},get saveC(){return saveC;},get saveF(){return saveF;},setFreeMode:setFreeMode,goTitle:goTitle,startPlay:startPlay,enterHouse:enterHouse,enterBuild:enterBuild,roomRect:function(){layoutRoom();return {x:room.x,y:room.y,w:room.w,h:room.h};},itemRect:function(it){layoutRoom();return itemRect(it);},trashPos:function(){layoutRoom();return trashPos();},get curHouse(){return curHouse;},townRect:function(){layoutTown();return {x:town.x,y:town.y,cw:town.cw,ch:town.ch};}};
+window.__game={get adoptColor(){return adoptColor;},adoptPrevName:function(){return adoptPrevName();},get gsave(){return gsave;},get outfit(){return outfit();},girlExists:girlExists,openDress:openDress,closeDress:closeDress,setPart:setPart,removePart:removePart,undoDress:undoDress,randomOutfit:randomOutfit,setSlot:setSlot,setDressColor:setDressColor,openPet:openPet,closePet:closePet,adoptPet:adoptPet,petCare:petCare,get GW(){return GW;},get PW(){return PW;},get RG(){return RG;},get RP(){return RP;},get dressCat(){return dressCat;},set dressCat(v){dressCat=v;renderDress();},petName:petName,dressLayout:function(){return layoutDress();},petLayout:function(){return layoutPet();},roomCharPos:function(w){layoutRoom();return roomCharPos(w==='pet'?RP:RG);},petTownPos:function(){layoutTown();return petTownPos();},shareStatsText:shareStatsText,prepShare:prepShare,setLang:setLang,get lang(){return LANG;},get lights(){return lights;},get rows(){return rows;},get player(){return player;},move:move,get mode(){return mode;},get save(){return save;},get free(){return FREE;},get saveC(){return saveC;},get saveF(){return saveF;},setFreeMode:setFreeMode,goTitle:goTitle,startPlay:startPlay,enterHouse:enterHouse,enterBuild:enterBuild,roomRect:function(){layoutRoom();return {x:room.x,y:room.y,w:room.w,h:room.h};},itemRect:function(it){layoutRoom();return itemRect(it);},trashPos:function(){layoutRoom();return trashPos();},get curHouse(){return curHouse;},townRect:function(){layoutTown();return {x:town.x,y:town.y,cw:town.cw,ch:town.ch};}};
 })();
 </script>
 </body>
