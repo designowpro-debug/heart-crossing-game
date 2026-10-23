@@ -21,6 +21,8 @@ A free, cozy browser game for kids (and grown-ups). No install, no ads, no sign-
 - 🛋️ **Go inside your houses** — decorate each room with 12 kinds of furniture: drag, flip and remove
 - 🌷 **Living town** — swaying flowers, butterflies, ducks and fish, a fountain, swings, a slide, a seesaw, a sandbox, a basketball court and a pool. Tap them for fun animations!
 - 🏡 **Free Build mode** — no cars, no levels, no tickets: just build as much as you like on a bigger 10×6 map. Direct link: [`?mode=free`](https://designowpro-debug.github.io/heart-crossing-game/?mode=free). Your free town is saved separately, so it never touches your challenge town
+- 👗 **Dress Up (paper doll)** — start from an empty silhouette and build a cute girl part by part: face & skin tone, eyes, brows, mouth, makeup, 9 hairstyles + hair colors, tops, bottoms, dresses, shoes and accessories (bows, tiaras, hats, glasses, earrings, necklaces, bags, wings). 🎲 Random, ↩ Undo, 3 outfit slots. She then walks around your town (tap where to go) and into your houses
+- 🦎 **Pet axolotl** — adopt a fluffy axolotl, name it and pick a color (white, pink, gold, blue, black). Feed 🍤, bathe 🫧, play 🎾 and pet 💖 it. It follows the girl everywhere, swims in ponds, and you can build an **Axolotl Tank** inside your houses
 - 📸 **Share your town** — one tap makes a cute picture of your town (or "I cleared Level N!") to share or save, no accounts or tracking
 - 🌐 **English & 中文** — switch any time with the language button
 - 📱 **iPad & phone friendly** — big touch buttons, swipe controls, works in portrait and landscape, add to Home Screen for fullscreen
@@ -34,6 +36,8 @@ A free, cozy browser game for kids (and grown-ups). No install, no ads, no sign-
 4. Reach the **FINISH** row to earn a build 🎟️, then tap an empty spot in your town to build.
 5. Tap a house to go inside and decorate. Tap gardens, ponds and playground items to see what happens!
 
+**Dress up & pets:** tap **👗 Dress Up** or **My Axolotl** on the title screen or in your town. In town, tap anywhere to walk the girl there; tap a house and she walks inside. Tap the axolotl to say hi!
+
 **Just want to build?** Tap **🏡 Free Build** on the title screen (or open [https://designowpro-debug.github.io/heart-crossing-game/?mode=free](https://designowpro-debug.github.io/heart-crossing-game/?mode=free)). Tap **🏠 Menu** to go back.
 
 ## 📸 Screenshots
@@ -46,9 +50,13 @@ A free, cozy browser game for kids (and grown-ups). No install, no ads, no sign-
 |---|---|---|
 | <img src="screenshots/free-build.png" width="280"> | <img src="screenshots/room.png" width="280"> | <img src="screenshots/traffic-lights.png" width="280"> |
 
-| 中文版 Playground |
-|---|
-| <img src="screenshots/playground-zh.png" width="280"> |
+| Dress Up | Girl in town | Pet axolotl |
+|---|---|---|
+| <img src="screenshots/dressup.png" width="280"> | <img src="screenshots/girl-town.png" width="280"> | <img src="screenshots/axolotl.png" width="280"> |
+
+| 中文版 Playground | 中文版 打扮 |
+|---|---|
+| <img src="screenshots/playground-zh.png" width="280"> | <img src="screenshots/dressup-zh.png" width="280"> |
 
 <p align="center"><b>Share image</b><br><img src="screenshots/share-town.png" width="360" alt="Share my town image"></p>
 
@@ -69,6 +77,8 @@ One self-contained `index.html`: HTML5 canvas, vanilla JavaScript and the Web Au
 
 - ▶ 馬上玩：<https://designowpro-debug.github.io/heart-crossing-game/?lang=zh>
 - 🏡 **自由蓋小鎮**：沒有車子、沒有關卡、不用建造券，想蓋多少就蓋多少（10×6 大地圖）！直接連結：<https://designowpro-debug.github.io/heart-crossing-game/?mode=free&lang=zh>（自由小鎮另外存檔，不會影響原本的小鎮）
+- 👗 **紙娃娃打扮**：從空白輪廓開始，一步一步選臉型膚色、眼睛、眉毛、嘴巴、妝容、髮型髮色、上衣、裙子褲子、洋裝、鞋子和配件；有🎲隨機、↩回上一步、3 個造型存檔。打扮好的女孩會在小鎮裡走路，點房子她就會走進去！
+- 🦎 **寵物蠍螈**：領養毛茸茸的蠍螈、取名字、選顏色，可以餵食🍤、洗澡🫧、玩耍🎾、摸摸💖；牠會跟著女孩走，也會在池塘游泳，房子裡還能擺「蠍螈水族箱」
 - 支援 iPad、手機和電腦；可以「加入主畫面」全螢幕玩
 - 右上角按鈕可以切換 **English / 中文**
 - 📸「分享我的小鎮」：一鍵做出可愛的小鎮圖片，可以分享或存起來
