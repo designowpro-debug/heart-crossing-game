@@ -388,14 +388,14 @@ zh:{docTitle:'愛心過馬路',hudTitle:'💗 愛心過馬路',sound:'聲音',la
  cfHouseF:'要拆掉這棟房子嗎？裡面的家具也會不見喔！',cfOtherF:'要拆掉「{n}」嗎？',removedF:'拆掉了！可以在這裡蓋新的東西 🏗️',rmModeF:'點一下要拆掉的東西',
  shareFree:'我的愛心小鎮：{n} 個建築',shareFree1:'我的愛心小鎮：1 個建築',
  shareTextFree:'我在「愛心過馬路」蓋了 {n} 個建築的愛心小鎮！💗 你也來蓋：',shareTextFree1:'我在「愛心過馬路」開始蓋愛心小鎮了！💗 你也來蓋：',
- dressBtn:'👗 打扮',petBtn:'我的蠍螈',petBtnShort:'寵物',petDefault:'小蠍',
+ dressBtn:'👗 打扮',petBtn:'我的蠑螈',petBtnShort:'寵物',petDefault:'小螈',
  dressStart:'來做一個女孩！先選臉型，再選眼睛、頭髮、衣服…✨',dressHi:'幫她打扮吧！點一下就可以換 ✨',
  girlHere:'她來了！點一個地方她就會走過去 👧・點房子會走進去',girlNeedFace:'先選一個臉型，她才能來小鎮喔！🙂',
  girlGoing:'走去房子囉…👣',girlHi:['嗨！👋','啦啦啦～🎵','好漂亮的小鎮！💗','耶～！✨'],
  dressOff:'拿掉了：{n}',dressNote:'洋裝會取代上衣和裙子褲子 👗',dressNote2:'換上衣服，洋裝先脫下來囉',dressNothing:'這裡沒有可以拿掉的',
  dressRemoved:'拿掉了：{n}',dressUndo:'回上一步 ↩',dressUndoNone:'沒有可以回復的了',dressRandom:'🎲 驚喜造型！',dressSlot:'造型 {n}',
  btnRandom:'🎲 隨機',btnUndo:'↩ 回上一步',btnRemove:'✖ 拿掉',btnDone:'✅ 完成',
- adoptTitle:'領養一隻蠍螈！',editTitle:'名字和顏色',adoptSub:'選顏色、取名字 💗',petNameLabel:'名字',adoptBtn:'💖 領養',saveName:'💾 好了',
+ adoptTitle:'領養一隻蠑螈！',editTitle:'名字和顏色',adoptSub:'選顏色、取名字 💗',petNameLabel:'名字',adoptBtn:'💖 領養',saveName:'💾 好了',
  happy:'開心',full:'飽飽',feed:'🍤 餵食',bath:'🫧 洗澡',play:'🎾 玩',petIt:'💖 摸摸',petEdit:'✏️ 名字和顏色',petBack:'⬅ 返回',
  feedMsg:'{n}：好吃好吃！🍤',bathMsg:'{n}最喜歡泡泡澡了！🫧',playMsg:'接住！{n}玩得好開心 🎾',petMsg:'{n}開心地扭來扭去 💖',
  petHungry:'{n}有一點餓了～🍤',petHello:'嗨，我是{n}！💗',adopted:'歡迎回家，{n}！💗',petSqueak:'吱吱！{n}跟你打招呼 💕',
@@ -1104,7 +1104,7 @@ var FURN={
   bed:{n:['Bed','床'],w:.27,h:.17}, sofa:{n:['Sofa','沙發'],w:.24,h:.13}, table:{n:['Table','桌子'],w:.16,h:.1}, chair:{n:['Chair','椅子'],w:.07,h:.13},
   tv:{n:['TV','電視'],w:.14,h:.15}, lamp:{n:['Lamp','燈'],w:.07,h:.22}, plant:{n:['Plant','盆栽'],w:.08,h:.14}, rug:{n:['Rug','地毯'],w:.28,h:.06,flat:true},
   wardrobe:{n:['Wardrobe','衣櫃'],w:.13,h:.27}, fridge:{n:['Fridge','冰箱'],w:.1,h:.25}, shelf:{n:['Bookshelf','書架'],w:.14,h:.22}, pillow:{n:['Heart Pillow','愛心抱枕'],w:.06,h:.06},
-  aquarium:{n:['Axolotl Tank','蠍螈水族箱'],w:.17,h:.21}
+  aquarium:{n:['Axolotl Tank','蠑螈水族箱'],w:.17,h:.21}
 };
 Object.keys(FURN).forEach(function(k){i18nName(FURN[k]);});
 var FURN_ORDER=['bed','sofa','table','chair','tv','lamp','plant','rug','wardrobe','fridge','shelf','pillow','aquarium'];
@@ -1424,7 +1424,7 @@ var gsave=blankGirl();
 try{var gs0=JSON.parse(localStorage.getItem(GIRL_KEY)||'null');if(gs0&&typeof gs0==='object'){
   if(Array.isArray(gs0.slots))for(var si=0;si<3;si++)gsave.slots[si]=cleanOutfit(gs0.slots[si]);
   if(gs0.cur>=0&&gs0.cur<3)gsave.cur=gs0.cur|0;
-  if(gs0.pet&&typeof gs0.pet==='object'){var P0=gs0.pet,PP=gsave.pet;PP.adopted=!!P0.adopted;PP.name=typeof P0.name==='string'?P0.name.slice(0,14):'';
+  if(gs0.pet&&typeof gs0.pet==='object'){var P0=gs0.pet,PP=gsave.pet;PP.adopted=!!P0.adopted;PP.name=typeof P0.name==='string'?P0.name.slice(0,14):'';if(PP.name==='小'+'\u880d')PP.name='小螈';
     PP.color=(P0.color>=0&&P0.color<AXO.length)?P0.color|0:0;PP.happy=isFinite(P0.happy)?Math.max(20,Math.min(100,+P0.happy)):80;
     PP.full=isFinite(P0.full)?Math.max(20,Math.min(100,+P0.full)):80;PP.last=isFinite(P0.last)?+P0.last:Date.now();}}}catch(e){}
 function persistGirl(){try{localStorage.setItem(GIRL_KEY,JSON.stringify(gsave));}catch(e){}}
